@@ -1,20 +1,8 @@
 import React from 'react';
-import ReactSelect from 'react-select';
+import ReactSelect, { OptionTypeBase } from 'react-select';
 
-interface SelectOption {
-  label: string;
-  value: string | number;
-}
-
-interface SelectProps {
-  name?: string;
-  value?: string | number;
-  placeholder?: string;
-  options: SelectOption[];
-}
-
-const Select: React.FC<SelectProps> = ({
-  options,
+const Select: React.FC<OptionTypeBase> = ({
+  ...props
 }) => (
   <ReactSelect
     styles={{
@@ -66,12 +54,16 @@ const Select: React.FC<SelectProps> = ({
         ...styles,
         color: 'var(--white)',
       }),
+      multiValue: (styles) => ({
+        ...styles,
+        backgroundColor: 'var(--gray2)',
+      }),
+      multiValueLabel: (styles) => ({
+        ...styles,
+        color: 'var(--white)',
+      }),
     }}
-    options={[
-      { label: 'Option 1', value: 1 },
-      { label: 'Option 2', value: 2 },
-      { label: 'Option 3', value: 3 },
-    ]}
+    {...props}
   />
 );
 

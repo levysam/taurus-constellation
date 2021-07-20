@@ -1,32 +1,18 @@
 import React from 'react';
 import Default from '../../layouts/Default/Default';
+import Card from '../../components/Card/Card';
 import Container from '../../components/Container/Container';
 import Row from '../../components/Row/Row';
 import Col from '../../components/Col/Col';
-import Card from '../../components/Card/Card';
-import styles from './styles.module.scss';
-import InputBlock from '../../components/InputBlock/InputBlock';
 import Input from '../../components/Input/Input';
-import Select from '../../components/Select/Select';
+import InputBlock from '../../components/InputBlock/InputBlock';
+import Textarea from '../../components/Textarea/Textarea';
 import Button from '../../components/Button/Button';
+import Select from '../../components/Select/Select';
+import styles from './styles.module.scss';
 
-const UserForm: React.FC = () => {
-  const title = 'Create User';
-
-  const rolesOptions = [
-    {
-      label: 'Administrator',
-      value: 'administrator',
-    },
-    {
-      label: 'Controller',
-      value: 'controller',
-    },
-    {
-      label: 'Guest',
-      value: 'guest',
-    },
-  ];
+const QueueForm: React.FC = () => {
+  const a = '';
 
   const groupsOptions = [
     {
@@ -41,27 +27,32 @@ const UserForm: React.FC = () => {
 
   return (
     <Default>
-      <Card title="Create User">
+      <Card title="Create Queue">
         <Container>
           <Row>
-            <Col xs={12} md={6} style={{ marginBottom: '20px' }}>
+            <Col xs={12} md={4}>
               <InputBlock label="Name" required>
                 <Input type="text" />
               </InputBlock>
             </Col>
-            <Col xs={12} md={6}>
-              <InputBlock label="Email" required>
-                <Input type="email" />
+            <Col xs={12} md={4}>
+              <InputBlock label="Host" required>
+                <Input type="text" />
+              </InputBlock>
+            </Col>
+            <Col xs={12} md={4}>
+              <InputBlock label="Port" required>
+                <Input type="text" />
               </InputBlock>
             </Col>
             <Col xs={12} md={6}>
-              <InputBlock label="Role" required>
-                <Select options={rolesOptions} />
+              <InputBlock label="Group" required>
+                <Select options={groupsOptions} />
               </InputBlock>
             </Col>
             <Col xs={12} md={6}>
-              <InputBlock label="Groups" required>
-                <Select options={groupsOptions} isMulti />
+              <InputBlock label="Description">
+                <Textarea />
               </InputBlock>
             </Col>
             <Col xs={12} className={styles.actions}>
@@ -74,10 +65,9 @@ const UserForm: React.FC = () => {
             </Col>
           </Row>
         </Container>
-
       </Card>
     </Default>
   );
 };
 
-export default UserForm;
+export default QueueForm;

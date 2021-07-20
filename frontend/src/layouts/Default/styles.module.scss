@@ -6,6 +6,7 @@
     height: 100vh;
     position: fixed;
     width: 200px;
+    z-index: 99999;
 
     @media only screen and (min-width: 768px) {
       position: relative;
