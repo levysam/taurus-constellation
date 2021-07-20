@@ -1,0 +1,40 @@
+.screen {
+  display: flex;
+  height: 100%;
+
+  .sidebar {
+    height: 100vh;
+    position: fixed;
+    width: 200px;
+
+    @media only screen and (min-width: 768px) {
+      position: relative;
+      width: 250px;
+    }
+
+    &.collapsed {
+      display: none;
+      width: 0px;
+
+      @media only screen and (min-width: 768px) {
+        display: block;
+        width: 60px;
+      }
+    }
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+
+    .topbar {
+      height: 70px;
+      width: 100%;
+    }
+
+    .content {
+      padding: 20px;
+    }
+  }
+}

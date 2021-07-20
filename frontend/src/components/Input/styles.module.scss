@@ -1,0 +1,17 @@
+.input {
+  background: var(--dark);
+  border: 2px solid transparent;
+  border-radius: 5px;
+  color: var(--white);
+  height: 38px;
+  padding: 0px 20px;
+
+  &.error {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  &:focus {
+    background-color: var(--gray1);
+  }
+}
