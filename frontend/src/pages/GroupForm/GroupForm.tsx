@@ -29,10 +29,10 @@ const GroupForm: React.FC = () => {
               </InputBlock>
             </Col>
             <Col xs={12} className={styles.actions}>
-              <Button variant="default">
+              <Button type="button" variant="default">
                 Cancel
               </Button>
-              <Button variant="primary">
+              <Button type="button" variant="primary">
                 Save
               </Button>
             </Col>

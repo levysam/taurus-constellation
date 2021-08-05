@@ -13,6 +13,8 @@ const Routes: React.FC = () => (
     <Route path="/groups/new" exact component={GroupForm} />
     <Route path="/queues/new" exact component={QueueForm} />
     <Route path="/users" exact component={UserList} />
+    <Route path="/users/new" exact component={UserForm} />
+    <Route path="/users/:id" exact component={UserForm} />
   </Switch>
 );
 
