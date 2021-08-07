@@ -6,7 +6,6 @@ import Row from '../../components/Row/Row';
 import Col from '../../components/Col/Col';
 import Input from '../../components/Input/Input';
 import InputBlock from '../../components/InputBlock/InputBlock';
-import Textarea from '../../components/Textarea/Textarea';
 import Button from '../../components/Button/Button';
 import Select from '../../components/Select/Select';
 import styles from './styles.module.scss';
@@ -52,7 +51,7 @@ const QueueForm: React.FC = () => {
             </Col>
             <Col xs={12} md={6}>
               <InputBlock label="Description">
-                <Textarea />
+                input
               </InputBlock>
             </Col>
             <Col xs={12} className={styles.actions}>

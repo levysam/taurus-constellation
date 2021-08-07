@@ -10,7 +10,7 @@ router.post(
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().required(),
-      description: Joi.string(),
+      description: Joi.string().allow(null, ''),
     },
   }),
   groupController.create,
@@ -36,6 +36,8 @@ router.put(
       name: Joi.string(),
       description: Joi.string(),
     },
+  }, {
+    allowUnknown: true,
   }),
   groupController.update,
 );
