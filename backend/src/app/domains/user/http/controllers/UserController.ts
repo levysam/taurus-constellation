@@ -60,6 +60,7 @@ class UserController {
       email,
       password,
       role,
+      groupIds,
     } = request.body;
     const updateUser = container.resolve(UpdateUserService);
     const user = await updateUser.execute({
@@ -68,6 +69,7 @@ class UserController {
       email,
       password,
       role,
+      groupIds,
     });
     return response.json(classToClass(user));
   }

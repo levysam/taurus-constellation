@@ -15,7 +15,7 @@ const GroupForm: React.FC = () => {
 
   return (
     <Default>
-      <Card title="Create Group">
+      <Card>
         <Container>
           <Row>
             <Col xs={12} md={6}>

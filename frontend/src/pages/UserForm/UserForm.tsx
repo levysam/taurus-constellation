@@ -5,13 +5,14 @@ import Default from '../../layouts/Default/Default';
 import Container from '../../components/Container/Container';
 import Row from '../../components/Row/Row';
 import Col from '../../components/Col/Col';
-import Card from '../../components/Card/Card';
+import Card, { CardHeader, CardTitle, CardTools } from '../../components/Card/Card';
 import styles from './styles.module.scss';
 import InputBlock from '../../components/InputBlock/InputBlock';
 import Input from '../../components/Input/Input';
 import Select from '../../components/Select/Select';
 import Button from '../../components/Button/Button';
 import Loader from '../../components/Loader/Loader';
+import ConfirmationModal from '../../components/ConfirmationModal/ConfirmationModal';
 import api from '../../services/api';
 import extractValidationErrors, { ValidationErrors } from '../../utils/extractValidationErrors';
 
@@ -25,6 +26,7 @@ interface User {
   email: string;
   password: string;
   role: string;
+  groups: Group[];
   groupIds: string[];
 }
 interface Group {
@@ -40,12 +42,14 @@ const UserForm: React.FC = () => {
   const history = useHistory();
   const { id: userId } = useParams<UserFormParams>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [showDisableModal, setShowDisableModal] = useState<boolean>(false);
   const [groups, setGroups] = useState<SelectOption[]>([] as SelectOption[]);
   const [user, setUser] = useState<User>({
     name: '',
     email: '',
     password: '',
     role: 'guest',
+    groups: [],
     groupIds: [],
   } as User);
   const [errors, setErrors] = useState<ValidationErrors>({} as ValidationErrors);
@@ -95,7 +99,7 @@ const UserForm: React.FC = () => {
     });
   };
 
-  const saveUser = async (): Promise<void> => {
+  const createUser = async (): Promise<void> => {
     setLoading(true);
 
     const schema = Yup.object().shape({
@@ -103,7 +107,7 @@ const UserForm: React.FC = () => {
       email: Yup.string().email().required(),
       password: Yup.string().required(),
       role: Yup.string().required(),
-      groupIds: Yup.array().of(Yup.string().required()).required(),
+      groupIds: Yup.array().of(Yup.string().required()).min(1).required(),
     });
 
     try {
@@ -111,9 +115,7 @@ const UserForm: React.FC = () => {
         abortEarly: false,
       });
 
-      // await api.post('/user', user);
-      setLoading(false);
-
+      await api.post('/user', user);
       history.push('/users');
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
@@ -125,8 +127,43 @@ const UserForm: React.FC = () => {
     }
   };
 
-  const cancel = (): void => {
-    history.goBack();
+  const updateUser = async (): Promise<void> => {
+    setLoading(true);
+
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string().email().required(),
+      password: Yup.string(),
+      role: Yup.string().required(),
+      groupIds: Yup.array().of(Yup.string().required()).min(1).required(),
+    });
+
+    try {
+      await schema.validate(user, {
+        abortEarly: false,
+      });
+
+      await api.put(`/user/${userId}`, user);
+      history.push('/users');
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        setErrors(
+          extractValidationErrors(error),
+        );
+        setLoading(false);
+      }
+    }
+  };
+
+  const saveUser = async (): Promise<void> => (userId
+    ? updateUser()
+    : createUser()
+  );
+
+  const disableUser = async (): Promise<void> => {
+    setLoading(true);
+    setLoading(false);
+    setShowDisableModal(false);
   };
 
   const roles: SelectOption[] = [
@@ -147,12 +184,35 @@ const UserForm: React.FC = () => {
   return (
     <Default>
 
+      <ConfirmationModal
+        show={showDisableModal}
+        title="Disable User"
+        onConfirm={disableUser}
+        onCancel={() => { setShowDisableModal(false); }}
+      >
+        Do you really want to disable this user?
+      </ConfirmationModal>
+
       {
         loading
         && <Loader />
       }
 
-      <Card title={title}>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {title}
+          </CardTitle>
+          <CardTools>
+            <Button
+              type="button"
+              variant="red"
+              onClick={() => { setShowDisableModal(true); }}
+            >
+              Disable
+            </Button>
+          </CardTools>
+        </CardHeader>
         <Container>
           <Row>
             <Col xs={12} style={{ marginBottom: '20px' }}>
@@ -188,7 +248,7 @@ const UserForm: React.FC = () => {
             <Col xs={12} md={6}>
               <InputBlock
                 label="Password"
-                required
+                required={!userId}
                 error={errors.password}
               >
                 <Input
@@ -208,6 +268,7 @@ const UserForm: React.FC = () => {
                 <Select
                   name="role"
                   options={roles}
+                  value={roles.find((role) => role.value === (user.role || 'guest'))}
                   handleSelect={({ name, value }) => { handleInput(name, value); }}
                   hasError={!!errors.role}
                 />
@@ -217,14 +278,15 @@ const UserForm: React.FC = () => {
               <InputBlock
                 label="Groups"
                 required
-                error={errors.groups}
+                error={errors.groupIds}
               >
                 <Select
                   name="groupIds"
                   options={groups}
+                  value={groups.filter((group) => user.groupIds.includes(group.value))}
                   isMulti
                   handleSelect={({ name, value }) => { handleInput(name, value); }}
-                  hasError={!!errors.role}
+                  hasError={!!errors.groupIds}
                 />
               </InputBlock>
             </Col>
@@ -232,7 +294,7 @@ const UserForm: React.FC = () => {
               <Button
                 type="button"
                 variant="default"
-                onClick={cancel}
+                onClick={() => { history.push('/users'); }}
               >
                 Cancel
               </Button>

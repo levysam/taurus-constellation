@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
 import {
+  AfterLoad,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -57,6 +58,15 @@ class User {
     },
   })
   groups: Group[];
+
+  groupIds: string[];
+
+  @AfterLoad()
+  setGroupIds() {
+    if (this.groups) {
+      this.groupIds = this.groups.map((group) => group.id);
+    }
+  }
 }
 
 export default User;

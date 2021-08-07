@@ -27,7 +27,7 @@ const QueueForm: React.FC = () => {
 
   return (
     <Default>
-      <Card title="Create Queue">
+      <Card>
         <Container>
           <Row>
             <Col xs={12} md={4}>

@@ -1,0 +1,50 @@
+.modal {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition: 0;
+  z-index: 99999;
+
+  &.show {
+    opacity: 1;
+    pointer-events: visible;
+  }
+
+  > .content {
+    background-color: var(--gray0);
+    border-radius: 5px;
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
+    width: 85vw;
+
+    @media only screen and (min-width: 768px) {
+      width: 50vw;
+    }
+
+    > .header {
+      padding: 20px;
+
+      > .title {
+        margin: 0;
+      }
+    }
+
+    > .footer {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      padding: 20px;
+    }
+
+    > .body {
+      padding: 20px;
+    }
+  }
+}

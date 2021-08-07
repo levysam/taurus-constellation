@@ -45,7 +45,10 @@ router.put(
       email: Joi.string().email(),
       password: Joi.string(),
       role: Joi.string(),
+      groupIds: Joi.array().items(Joi.string().required()),
     },
+  }, {
+    allowUnknown: true,
   }),
   userController.update,
 );

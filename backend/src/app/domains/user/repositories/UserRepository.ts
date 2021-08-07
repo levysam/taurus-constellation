@@ -32,7 +32,9 @@ class UserRepository implements IUserRepository {
   }
 
   public async find(id: string): Promise<User | undefined> {
-    const user = await this.ormRepository.findOne(id);
+    const user = await this.ormRepository.findOne(id, {
+      relations: ['groups'],
+    });
     return user;
   }
 
