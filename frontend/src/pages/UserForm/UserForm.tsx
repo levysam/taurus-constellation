@@ -49,7 +49,7 @@ const UserForm: React.FC = () => {
     groupIds: [],
   } as User);
   const [errors, setErrors] = useState<ValidationErrors>({} as ValidationErrors);
-  const title = 'Create User';
+  const title = userId ? 'Edit User' : 'Create User';
 
   useEffect(() => {
     const loadGroups = async (): Promise<void> => {

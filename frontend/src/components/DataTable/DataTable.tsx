@@ -19,6 +19,7 @@ interface DataTableProps {
   selection?: boolean;
   pagination?: boolean;
   onSelect?: (selected: any) => void;
+  onClickRow?: (row: any) => void;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -29,6 +30,7 @@ const DataTable: React.FC<DataTableProps> = ({
   selection,
   pagination,
   onSelect,
+  onClickRow,
   children,
 }) => {
   const [selected, setSelected] = useState([] as any);
@@ -72,6 +74,12 @@ const DataTable: React.FC<DataTableProps> = ({
     }
   };
 
+  const handleClickRow = (row: any): void => {
+    if (onClickRow) {
+      onClickRow(row);
+    }
+  };
+
   return (
     <div className={styles.dataTable}>
       <div className={styles.header}>
@@ -109,7 +117,10 @@ const DataTable: React.FC<DataTableProps> = ({
           <tbody>
             {
               data.map((row) => (
-                <tr key={row[idField]}>
+                <tr
+                  key={row[idField]}
+                  onClick={() => { handleClickRow(row); }}
+                >
                   {
                     selection
                     && (

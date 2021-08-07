@@ -52,6 +52,11 @@
             }
           }
 
+          &:hover {
+            color: var(--gray2);
+            cursor: pointer;
+          }
+
           td {
             padding: 20px 0px;
 

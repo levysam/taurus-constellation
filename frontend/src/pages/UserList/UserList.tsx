@@ -37,6 +37,12 @@ const UserList: React.FC = () => {
     history.push('/users/new');
   }, [history]);
 
+  const viewUser = useCallback((row: any) => {
+    setLoading(true);
+    const { id } = row;
+    history.push(`/users/${id}`);
+  }, [history]);
+
   const columns = [
     {
       label: 'ID',
@@ -68,6 +74,7 @@ const UserList: React.FC = () => {
         idField="id"
         columns={columns}
         data={users}
+        onClickRow={viewUser}
       >
         <Button
           type="button"
