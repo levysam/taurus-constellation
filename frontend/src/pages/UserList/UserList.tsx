@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Default from '../../layouts/Default/Default';
-import DataTable from '../../components/DataTable/DataTable';
+import DataTable, { DataTableColumn } from '../../components/DataTable/DataTable';
 import Button from '../../components/Button/Button';
 import Loader from '../../components/Loader/Loader';
 import api from '../../services/api';
@@ -33,35 +33,34 @@ const UserList: React.FC = () => {
     loadUsers();
   }, [history]);
 
+  const columns: DataTableColumn[] = [
+    {
+      field: 'id',
+      text: 'ID',
+      hide: true,
+    },
+    {
+      field: 'name',
+      text: 'Name',
+    },
+    {
+      field: 'email',
+      text: 'Email',
+    },
+    {
+      field: 'role',
+      text: 'Role',
+      formatter: (row: any) => row.role.charAt(0).toUpperCase() + row.role.slice(1),
+    },
+  ];
+
   const addUser = useCallback(() => {
     history.push('/users/new');
   }, [history]);
 
-  const viewUser = useCallback((row: any) => {
-    setLoading(true);
-    const { id } = row;
-    history.push(`/users/${id}`);
-  }, [history]);
-
-  const columns = [
-    {
-      label: 'ID',
-      field: 'id',
-      hidden: true,
-    },
-    {
-      label: 'Name',
-      field: 'name',
-    },
-    {
-      label: 'Email',
-      field: 'email',
-    },
-    {
-      label: 'Role',
-      field: 'role',
-    },
-  ];
+  const openUser = useCallback((row: any) => {
+    history.push(`/users/${row.id}`);
+  }, [users]);
 
   return (
     <Default>
@@ -69,21 +68,25 @@ const UserList: React.FC = () => {
         loading
         && <Loader />
       }
+
       <DataTable
         title="Users"
-        idField="id"
+        keyField="id"
         columns={columns}
         data={users}
-        onClickRow={viewUser}
-      >
-        <Button
-          type="button"
-          variant="primary"
-          onClick={addUser}
-        >
-          Add
-        </Button>
-      </DataTable>
+        tools={(
+          <>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={addUser}
+            >
+              Add
+            </Button>
+          </>
+        )}
+        onRowClick={openUser}
+      />
     </Default>
   );
 };

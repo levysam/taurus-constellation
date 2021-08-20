@@ -1,83 +1,46 @@
-import React from 'react';
-import { useState } from 'react';
-import Checkbox from '../Checkbox/Checkbox';
-import Pagination from '../Pagination/Pagination';
+import React, { useCallback } from 'react';
 import styles from './styles.module.scss';
 
-interface DataTableColumn {
-  label: string;
+export interface DataTableColumn {
   field: string;
-  hidden?: boolean;
+  text?: string;
+  hide?: boolean;
+  formatter?: (row: any) => any;
 }
 
 interface DataTableProps {
   title: string;
+  keyField: string;
   columns: DataTableColumn[];
   data: any[];
-  idField: string;
-  selection?: boolean;
-  pagination?: boolean;
-  onSelect?: (selected: any) => void;
-  onClickRow?: (row: any) => void;
+  tools?: React.ReactNode;
+  onRowClick?: (row: any) => void;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
   title,
+  keyField,
   columns,
   data,
-  idField,
-  selection,
-  pagination,
-  onSelect,
-  onClickRow,
-  children,
+  tools,
+  onRowClick,
 }) => {
-  const [selected, setSelected] = useState([] as any);
+  const handleRowClick = useCallback((row: any) => {
+    if (onRowClick) {
+      onRowClick(row);
+    }
+  }, [data, onRowClick]);
 
-  const selectAll = (): void => {
-    const newSelected = data.map((row: any) => row[idField]);
-    setSelected(newSelected);
-    if (onSelect) {
-      onSelect(newSelected);
-    }
-  };
+  const isNestedField = useCallback((field: string): boolean => field.includes('.'), [columns]);
 
-  const unselectAll = (): void => {
-    setSelected([]);
-    if (onSelect) {
-      onSelect([]);
-    }
-  };
-
-  const selectRow = (row: any): void => {
-    const id = row[idField];
-    if (selected.indexOf(id) !== -1) {
-      return;
-    }
-    const newSelected = [
-      ...selected,
-      id,
-    ];
-    setSelected(newSelected);
-    if (onSelect) {
-      onSelect(newSelected);
-    }
-  };
-
-  const unselectRow = (row: any): void => {
-    const id = row[idField];
-    const newSelected = selected.filter((item: any) => item !== id);
-    setSelected(newSelected);
-    if (onSelect) {
-      onSelect(newSelected);
-    }
-  };
-
-  const handleClickRow = (row: any): void => {
-    if (onClickRow) {
-      onClickRow(row);
-    }
-  };
+  const showNestedFieldValue = useCallback((row: any, field: string) => {
+    const levels = field.split('.');
+    let value = row;
+    levels.forEach((level) => {
+      value = value[level];
+    });
+    return value;
+  }, [data]);
 
   return (
     <div className={styles.dataTable}>
@@ -86,30 +49,27 @@ const DataTable: React.FC<DataTableProps> = ({
           {title}
         </h2>
         <div className={styles.tools}>
-          {children}
+          {tools}
         </div>
       </div>
       <div className={styles.content}>
-        <table cellSpacing={0} cellPadding={0}>
+        <table
+          cellSpacing={0}
+          cellPadding={0}
+        >
           <thead>
             <tr>
               {
-                selection
-                && (
-                <th className={styles.checkboxColumn}>
-                  <Checkbox
-                    variant="dark"
-                    checked={data.length > 0 && data.length === selected.length}
-                    onCheck={() => { selectAll(); }}
-                    onUncheck={() => { unselectAll(); }}
-                  />
-                </th>
-                )
-              }
-              {
-                columns.map((column) => (
-                  !column.hidden ? <th key={column.field}>{column.label}</th> : null
-                ))
+                columns.map((column) => {
+                  if (column.hide) {
+                    return null;
+                  }
+                  return (
+                    <th key={column.field}>
+                      {column.text}
+                    </th>
+                  );
+                })
               }
             </tr>
           </thead>
@@ -117,43 +77,40 @@ const DataTable: React.FC<DataTableProps> = ({
             {
               data.map((row) => (
                 <tr
-                  key={row[idField]}
-                  onClick={() => { handleClickRow(row); }}
+                  key={row[keyField]}
+                  onClick={() => { handleRowClick(row); }}
                 >
                   {
-                    selection
-                    && (
-                      <td>
-                        <Checkbox
-                          checked={selected.indexOf(row[idField]) > -1}
-                          onCheck={() => { selectRow(row); }}
-                          onUncheck={() => { unselectRow(row); }}
-                        />
-                      </td>
-                    )
-                  }
-                  {
-                    columns.map((column) => (
-                      !column.hidden ? <td key={`${row[idField]}-${column.field}`}>{row[column.field]}</td> : null
-                    ))
+                    columns.map((column) => {
+                      if (column.hide) {
+                        return null;
+                      }
+                      if (column.formatter) {
+                        return (
+                          <td key={column.field}>
+                            {column.formatter(row)}
+                          </td>
+                        );
+                      }
+                      if (isNestedField(column.field)) {
+                        return (
+                          <td key={column.field}>
+                            { showNestedFieldValue(row, column.field) }
+                          </td>
+                        );
+                      }
+                      return (
+                        <td key={column.field}>
+                          {row[column.field]}
+                        </td>
+                      );
+                    })
                   }
                 </tr>
               ))
             }
           </tbody>
         </table>
-        {
-          pagination
-          && (
-          <div className={styles.pagination}>
-            <Pagination
-              pageCount={10}
-              pageRangeDisplayed={1}
-              marginPagesDisplayed={0}
-            />
-          </div>
-          )
-        }
       </div>
     </div>
   );

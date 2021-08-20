@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import Default from '../../layouts/Default/Default';
-import DataTable from '../../components/DataTable/DataTable';
+import DataTable, { DataTableColumn } from '../../components/DataTable/DataTable';
 import Loader from '../../components/Loader/Loader';
 import api from '../../services/api';
 
@@ -32,30 +32,29 @@ const GroupList: React.FC = () => {
     loadGroups();
   }, [history]);
 
-  const addGroup = (): void => {
-    history.push('/groups/new');
-  };
-
-  const viewGroup = (row: any): void => {
-    const { id } = row;
-    history.push(`/groups/${id}`);
-  };
-
-  const columns = [
+  const columns: DataTableColumn[] = [
     {
-      label: 'ID',
       field: 'id',
-      hidden: true,
+      text: 'ID',
+      hide: true,
     },
     {
-      label: 'Name',
       field: 'name',
+      text: 'Name',
     },
     {
-      label: 'Description',
       field: 'description',
+      text: 'Description',
     },
   ];
+
+  const addGroup = useCallback(() => {
+    history.push('/groups/new');
+  }, [history]);
+
+  const openGroup = useCallback((row: any) => {
+    history.push(`/groups/${row.id}`);
+  }, [groups]);
 
   return (
     <Default>
@@ -66,19 +65,22 @@ const GroupList: React.FC = () => {
 
       <DataTable
         title="Groups"
-        idField="id"
+        keyField="id"
         columns={columns}
         data={groups}
-        onClickRow={viewGroup}
-      >
-        <Button
-          type="button"
-          variant="primary"
-          onClick={addGroup}
-        >
-          Add
-        </Button>
-      </DataTable>
+        tools={(
+          <>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={addGroup}
+            >
+              Add
+            </Button>
+          </>
+        )}
+        onRowClick={openGroup}
+      />
     </Default>
   );
 };

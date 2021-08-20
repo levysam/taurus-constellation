@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import Default from '../../layouts/Default/Default';
-import DataTable from '../../components/DataTable/DataTable';
+import DataTable, { DataTableColumn } from '../../components/DataTable/DataTable';
 import Loader from '../../components/Loader/Loader';
 import api from '../../services/api';
 
@@ -44,34 +44,33 @@ const QueueList: React.FC = () => {
     loadQueues();
   }, [history]);
 
-  const addQueue = (): void => {
-    history.push('/queues/new');
-  };
-
-  const viewQueue = (row: any): void => {
-    const { id } = row;
-    history.push(`/queues/${id}`);
-  };
-
-  const columns = [
+  const columns: DataTableColumn[] = [
     {
-      label: 'ID',
       field: 'id',
-      hidden: true,
+      text: 'ID',
+      hide: true,
     },
     {
-      label: 'Name',
       field: 'name',
+      text: 'Name',
     },
     {
-      label: 'Group',
-      field: 'groupName',
+      field: 'group.name',
+      text: 'Group',
     },
     {
-      label: 'Description',
       field: 'description',
+      text: 'Description',
     },
   ];
+
+  const addQueue = useCallback(() => {
+    history.push('/queues/new');
+  }, [history]);
+
+  const openQueue = useCallback((row: any) => {
+    history.push(`/queues/${row.id}`);
+  }, [queues]);
 
   return (
     <Default>
@@ -82,19 +81,22 @@ const QueueList: React.FC = () => {
 
       <DataTable
         title="Queues"
-        idField="id"
+        keyField="id"
         columns={columns}
         data={queues}
-        onClickRow={viewQueue}
-      >
-        <Button
-          type="button"
-          variant="primary"
-          onClick={addQueue}
-        >
-          Add
-        </Button>
-      </DataTable>
+        tools={(
+          <>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={addQueue}
+            >
+              Add
+            </Button>
+          </>
+        )}
+        onRowClick={openQueue}
+      />
     </Default>
   );
 };

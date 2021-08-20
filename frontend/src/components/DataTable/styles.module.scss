@@ -36,10 +36,6 @@
             &:last-child {
               padding-right: 20px;
             }
-
-            &.checkboxColumn {
-              width: 60px;
-            }
           }
         }
       }
@@ -71,11 +67,10 @@
         }
       }
     }
+  }
 
-    .pagination {
-      display: flex;
-      justify-content: flex-end;
-      padding: 20px;
-    }
+  .footer {
+    border-top: 1px solid var(--gray1);
+    padding: 20px;
   }
 }
