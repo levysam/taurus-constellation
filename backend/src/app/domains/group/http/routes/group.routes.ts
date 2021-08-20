@@ -34,7 +34,7 @@ router.put(
     },
     [Segments.BODY]: {
       name: Joi.string(),
-      description: Joi.string(),
+      description: Joi.string().allow(null, ''),
     },
   }, {
     allowUnknown: true,

@@ -15,11 +15,11 @@ const Route: React.FC<RouteProps> = ({
   component: Component,
   ...props
 }) => {
-  const user = 'a';
+  const user = true;
   return (
     <ReactDOMRoute
       {...props}
-      render={({ location }) => (true ? (
+      render={({ location }) => (user ? (
         <Component />
       ) : (
         <Redirect

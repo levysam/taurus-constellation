@@ -21,10 +21,10 @@ router.post(
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().required(),
-      description: Joi.string(),
       host: Joi.string().required(),
       port: Joi.number().required(),
       groupId: Joi.string().required(),
+      description: Joi.string().allow(null, ''),
     },
   }),
   queueController.create,
@@ -68,11 +68,6 @@ router.delete(
 
 router.get(
   '/',
-  celebrate({
-    [Segments.QUERY]: {
-      groupId: Joi.string().required(),
-    },
-  }),
   queueController.list,
 );
 
@@ -142,11 +137,13 @@ router.put(
     },
     [Segments.BODY]: {
       name: Joi.string(),
-      description: Joi.string(),
       host: Joi.string(),
       port: Joi.number(),
       groupId: Joi.string(),
+      description: Joi.string().allow(null, ''),
     },
+  }, {
+    allowUnknown: true,
   }),
   queueController.update,
 );

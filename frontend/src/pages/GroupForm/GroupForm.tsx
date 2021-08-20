@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useHistory, useParams } from 'react-router-dom';
 import Default from '../../layouts/Default/Default';
-import Card, { CardHeader, CardTitle, CardTools } from '../../components/Card/Card';
+import Card, { CardHeader, CardTitle } from '../../components/Card/Card';
 import Container from '../../components/Container/Container';
 import Row from '../../components/Row/Row';
 import Col from '../../components/Col/Col';

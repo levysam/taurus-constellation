@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
 import Checkbox from '../Checkbox/Checkbox';
-import Dropdown from '../Dropdown/Dropdown';
 import Pagination from '../Pagination/Pagination';
 import styles from './styles.module.scss';
 

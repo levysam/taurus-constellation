@@ -90,13 +90,8 @@ class QueueController {
   }
 
   public async list(request: Request, response: Response): Promise<Response> {
-    const {
-      groupId,
-    } = request.query;
     const listQueue = container.resolve(ListQueueService);
-    const queues = await listQueue.execute({
-      groupId: String(groupId),
-    });
+    const queues = await listQueue.execute();
     return response.json(classToClass(queues));
   }
 

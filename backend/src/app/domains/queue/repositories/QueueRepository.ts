@@ -39,7 +39,9 @@ class QueueRepository implements IQueueRepository {
   }
 
   public async findAll(): Promise<Queue[]> {
-    const queues = await this.ormRepository.find();
+    const queues = await this.ormRepository.find({
+      relations: ['group'],
+    });
     return queues;
   }
 
