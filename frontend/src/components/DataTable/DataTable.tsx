@@ -1,10 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import Checkbox from '../Checkbox/Checkbox';
 import styles from './styles.module.scss';
 
 export interface DataTableColumn {
   field: string;
   text?: string;
   hide?: boolean;
+  style?: React.CSSProperties;
   formatter?: (row: any) => any;
 }
 
@@ -14,6 +16,11 @@ interface DataTableProps {
   columns: DataTableColumn[];
   data: any[];
   tools?: React.ReactNode;
+  enableSelection?: boolean;
+  onSelect?: (row: any) => void;
+  onUnselect?: (row: any) => void;
+  onSelectAll?: () => void;
+  onUnselectAll?: () => void;
   onRowClick?: (row: any) => void;
 }
 
@@ -23,6 +30,11 @@ const DataTable: React.FC<DataTableProps> = ({
   columns,
   data,
   tools,
+  enableSelection,
+  onSelect,
+  onUnselect,
+  onSelectAll,
+  onUnselectAll,
   onRowClick,
 }) => {
   const handleRowClick = useCallback((row: any) => {
@@ -60,12 +72,23 @@ const DataTable: React.FC<DataTableProps> = ({
           <thead>
             <tr>
               {
+                enableSelection
+                && (
+                  <th>
+                    <Checkbox
+                      variant="dark"
+                    />
+                  </th>
+                )
+              }
+              {
                 columns.map((column) => {
+                  const style = column.style || undefined;
                   if (column.hide) {
                     return null;
                   }
                   return (
-                    <th key={column.field}>
+                    <th key={column.field} style={style}>
                       {column.text}
                     </th>
                   );
@@ -75,32 +98,52 @@ const DataTable: React.FC<DataTableProps> = ({
           </thead>
           <tbody>
             {
+              !data.length
+              && (
+                <tr>
+                  <td colSpan={columns.length}>
+                    No data available.
+                  </td>
+                </tr>
+              )
+            }
+            {
               data.map((row) => (
                 <tr
                   key={row[keyField]}
                   onClick={() => { handleRowClick(row); }}
                 >
                   {
+                    enableSelection
+                    && (
+                      <td>
+                        <Checkbox />
+                      </td>
+                    )
+                  }
+                  {
                     columns.map((column) => {
+                      const style = column.style || undefined;
+
                       if (column.hide) {
                         return null;
                       }
                       if (column.formatter) {
                         return (
-                          <td key={column.field}>
+                          <td key={column.field} style={style}>
                             {column.formatter(row)}
                           </td>
                         );
                       }
                       if (isNestedField(column.field)) {
                         return (
-                          <td key={column.field}>
+                          <td key={column.field} style={style}>
                             { showNestedFieldValue(row, column.field) }
                           </td>
                         );
                       }
                       return (
-                        <td key={column.field}>
+                        <td key={column.field} style={style}>
                           {row[column.field]}
                         </td>
                       );

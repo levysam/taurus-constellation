@@ -1,0 +1,30 @@
+.input {
+  background: var(--dark);
+  border: 2px solid transparent !important;
+  border-radius: 5px;
+  color: var(--white) !important;
+  font-size: var(--font-size) !important;
+  height: 38px;
+  padding: 0px 20px;
+  outline: 0px !important;
+
+  &:active {
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
+    border: 2px solid transparent !important;
+    outline: 0px !important;
+  }
+
+  &:focus {
+    background-color: var(--gray1);
+    border: 2px solid transparent !important;
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22) !important;
+  }
+
+  &.error {
+    border: 2px solid var(--danger) !important;
+
+    &:active, &:focus {
+      border: 2px solid var(--danger) !important;
+    }
+  }
+}

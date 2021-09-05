@@ -1,0 +1,25 @@
+.textarea {
+  background: var(--dark);
+  border: 2px solid transparent;
+  border-radius: 5px;
+  color: var(--white) !important;
+  font-size: var(--font-size) !important;
+  padding: 10px 20px;
+
+  &.error {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  &:active {
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
+    border: none !important;
+    outline: 0px !important;
+  }
+
+  &:focus {
+    background-color: var(--gray1);
+    border: none !important;
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22) !important;
+  }
+}

@@ -1,6 +1,10 @@
 .screen {
+  bottom: 0;
   display: flex;
-  height: 100%;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
 
   .sidebar {
     background-color: blue;

@@ -1,0 +1,29 @@
+.dropdown {
+  .toggle {
+    background-color: var(--gray0);
+    border: 1px solid var(--dark);
+    border-radius: 5px;
+    box-shadow: 0 5px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
+    font-size: var(--font-size);
+    font-weight: bold;
+
+    &:active, &:focus {
+      background-color: var(--gray0);
+      border-color: var(--dark);
+      box-shadow: 0 5px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22) !important;
+    }
+  }
+
+  .menu {
+    background-color: var(--dark);
+
+    .option {
+      color: var(--white);
+      font-size: var(--font-size);
+
+      &:hover {
+        background-color: var(--gray1);
+      }
+    }
+  }
+}

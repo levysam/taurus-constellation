@@ -1,0 +1,60 @@
+@import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+
+.dataTable {
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+
+  .header {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 20px;
+  }
+
+  .table {
+    border: none;
+    cursor: pointer;
+    margin-bottom: 0px;
+
+    .header {
+      background-color: var(--dark);
+      border: none;
+      color: var(--gray2);
+    }
+
+    .row {
+      border: none;
+      color: var(--white);
+    }
+
+    th {
+      border: none;
+      padding: 15px 0px;
+
+      &:first-child {
+        padding-left: 20px;
+      }
+
+      &:last-child {
+        padding-right: 20px;
+      }
+    }
+
+    td {
+      border: none;
+      padding: 15px 0px;
+
+      &:first-child {
+        padding-left: 20px;
+      }
+
+      &:last-child {
+        padding-right: 20px;
+      }
+    }
+  }
+
+  .footer {
+    padding-right: 20px;
+  }
+}

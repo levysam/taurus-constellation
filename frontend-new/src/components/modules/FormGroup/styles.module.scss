@@ -1,0 +1,21 @@
+.formGroup {
+  .label {
+    align-items: center;
+    display: flex;
+    font-weight: bold;
+
+    .required {
+      background-color: var(--danger);
+      border-radius: 5px;
+      width: 5px;
+      height: 5px;
+      margin-left: 8px;
+    }
+  }
+
+  .error {
+    color: var(--danger);
+    min-height: 18px;
+    max-height: 18px;
+  }
+}

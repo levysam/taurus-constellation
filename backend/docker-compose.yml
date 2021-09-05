@@ -1,6 +1,6 @@
 version: "3"
 services:
-  taurus-manager-mysql:
+  taurus-constellation-mysql:
     image: mysql:8.0.16
     container_name: taurus-constellation-mysql
     command: --default-authentication-plugin=mysql_native_password
