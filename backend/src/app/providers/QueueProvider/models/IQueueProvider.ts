@@ -9,7 +9,7 @@ interface IQueueProvider {
   close(): Promise<void>;
   deleteJobs(jobIds: string[]): Promise<boolean>;
   describe(): Promise<Queue>;
-  getJob(jobId: string): Promise<Job>;
+  getJob(jobId: string): Promise<Job | undefined>;
   getJobCounts(): Promise<QueueJobCounts>;
   getJobCountsByState(state: JobState): Promise<number>;
   getStatus(): Promise<QueueStatus>;

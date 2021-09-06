@@ -1,0 +1,52 @@
+.toolbar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+
+  .title {
+    flex: 1;
+    margin-bottom: 20px;
+    min-width: 200px;
+
+    span {
+      color: var(--gray2);
+      text-transform: uppercase;
+    }
+  }
+
+  .actions {
+    align-items: center;
+    display: flex;
+    margin-bottom: 20px;
+
+    .status {
+      align-items: center;
+      display: flex;
+      font-size: 16px;
+      font-weight: bold;
+      margin-right: 25px;
+
+      .icon {
+        font-size: 20px;
+        margin-right: 5px;
+
+        &.running {
+          color: var(--success);
+        }
+
+        &.paused {
+          color: var(--danger);
+        }
+      }
+
+      .value {
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+
+.statsCard {
+  margin-bottom: 20px;
+}

@@ -10,8 +10,11 @@ import RetryJobService from '../../../job/services/RetryJobService';
 import CreateQueueService from '../../services/CreateQueueService';
 import DeleteQueueService from '../../services/DeleteQueueService';
 import ListQueueService from '../../services/ListQueueService';
+import PauseQueueBulkService from '../../services/PauseQueueBulkService';
 import PauseQueueService from '../../services/PauseQueueService';
+import ResumeQueueBulkService from '../../services/ResumeQueueBulkService';
 import ResumeQueueService from '../../services/ResumeQueueService';
+import ShowQueueDashboardService from '../../services/ShowQueueDashboardService';
 import ShowQueueService from '../../services/ShowQueueService';
 import UpdateQueueService from '../../services/UpdateQueueService';
 
@@ -125,6 +128,17 @@ class QueueController {
     return response.json(result);
   }
 
+  public async pauseBulk(request: Request, response: Response): Promise<Response> {
+    const {
+      ids,
+    } = request.body;
+    const pauseQueueBulk = container.resolve(PauseQueueBulkService);
+    const result = await pauseQueueBulk.execute({
+      ids,
+    });
+    return response.json(result);
+  }
+
   public async resume(request: Request, response: Response): Promise<Response> {
     const {
       id,
@@ -132,6 +146,17 @@ class QueueController {
     const resumeQueue = container.resolve(ResumeQueueService);
     const result = await resumeQueue.execute({
       id,
+    });
+    return response.json(result);
+  }
+
+  public async resumeBulk(request: Request, response: Response): Promise<Response> {
+    const {
+      ids,
+    } = request.body;
+    const resumeQueueBulk = container.resolve(ResumeQueueBulkService);
+    const result = await resumeQueueBulk.execute({
+      ids,
     });
     return response.json(result);
   }
@@ -160,6 +185,17 @@ class QueueController {
       id,
     });
     return response.json(classToClass(queue));
+  }
+
+  public async showDashboard(request: Request, response: Response): Promise<Response> {
+    const {
+      id,
+    } = request.params;
+    const showQueueDashboard = container.resolve(ShowQueueDashboardService);
+    const queueDashboard = await showQueueDashboard.execute({
+      id,
+    });
+    return response.json(queueDashboard);
   }
 
   public async update(request: Request, response: Response): Promise<Response> {

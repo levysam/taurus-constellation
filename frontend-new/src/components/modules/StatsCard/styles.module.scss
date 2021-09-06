@@ -1,0 +1,48 @@
+.card {
+  background-color: var(--gray0);
+  border-radius: 5px;
+  box-shadow: 0 5px 35px rgba(0, 0, 0, 0.20), 0 5px 12px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  padding: 20px;
+
+  &:hover {
+    color: var(--primary);
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
+  }
+
+  .header {
+    margin-bottom: 10px;
+
+    .title {
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
+
+  .content {
+    font-weight: bold;
+    font-size: 90px;
+    text-align: center;
+    width: 100%;
+
+    &.primary {
+      color: var(--primary);
+    }
+
+    &.green {
+      color: var(--success);
+    }
+
+    &.yellow {
+      color: var(--yellow);
+    }
+
+    &.orange {
+      color: var(--orange);
+    }
+
+    &.red {
+      color: var(--danger);
+    }
+  }
+}

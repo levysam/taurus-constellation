@@ -15,6 +15,7 @@ export type Job = {
   attemptsMade: number;
   name: string;
   timestamp: number;
+  dateTime: string;
 };
 
 export type JobState = 'waiting' | 'active' | 'delayed' | 'failed' | 'completed';

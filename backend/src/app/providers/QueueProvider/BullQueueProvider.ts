@@ -1,5 +1,6 @@
 import Bull from 'bull';
 import { ulid } from 'ulid';
+import moment from 'moment';
 import Queue from '../../domains/queue/entities/Queue';
 import IQueueProvider from './models/IQueueProvider';
 import {
@@ -64,9 +65,15 @@ class BullQueueProvider implements IQueueProvider {
     return this.queue;
   }
 
-  public async getJob(jobId: string): Promise<Job> {
+  public async getJob(jobId: string): Promise<Job | undefined> {
     const job = await this.bullQueue.getJob(jobId);
-    return job as Job;
+    if (!job) {
+      return undefined;
+    }
+    return {
+      ...job,
+      dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD'),
+    } as Job;
   }
 
   public async getJobCounts(): Promise<QueueJobCounts> {
@@ -104,6 +111,7 @@ class BullQueueProvider implements IQueueProvider {
       attemptsMade: job.attemptsMade,
       name: job.name,
       timestamp: job.timestamp,
+      dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD H:m:s'),
     }));
   }
 

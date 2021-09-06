@@ -97,6 +97,16 @@ router.put(
 );
 
 router.put(
+  '/pause',
+  celebrate({
+    [Segments.BODY]: {
+      ids: Joi.array().items(Joi.string().required()).required(),
+    },
+  }),
+  queueController.pauseBulk,
+);
+
+router.put(
   '/:id/resume',
   celebrate({
     [Segments.PARAMS]: {
@@ -104,6 +114,16 @@ router.put(
     },
   }),
   queueController.resume,
+);
+
+router.put(
+  '/resume',
+  celebrate({
+    [Segments.BODY]: {
+      ids: Joi.array().items(Joi.string().required()).required(),
+    },
+  }),
+  queueController.resumeBulk,
 );
 
 router.post(
@@ -127,6 +147,16 @@ router.get(
     },
   }),
   queueController.show,
+);
+
+router.get(
+  '/:id/dashboard',
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.string().required(),
+    },
+  }),
+  queueController.showDashboard,
 );
 
 router.put(

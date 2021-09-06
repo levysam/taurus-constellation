@@ -26,6 +26,8 @@ $theme-colors: (
   --white: #FFFFFF;
   --success: #7FC146;
   --danger: #FF554C;
+  --yellow: #FFD300;
+  --orange: #FF9500;
   --font-family: 'Poppins', sans-serif;
   --font-size: 14px;
 }
@@ -75,4 +77,24 @@ a {
 
 .mr-1 {
   margin-right: 10px;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.text-danger {
+  color: var(--danger) !important;
+}
+
+.text-primary {
+  color: var(--primary) !important;
+}
+
+.text-success {
+  color: var(--success) !important;
 }

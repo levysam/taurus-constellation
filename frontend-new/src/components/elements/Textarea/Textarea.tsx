@@ -1,14 +1,23 @@
 import React from 'react';
+import classnames from 'classnames';
 import BFormControl, { FormControlProps as BTextareaProps } from 'react-bootstrap/FormControl';
 import styles from './styles.module.scss';
 
-const Textarea: React.FC<BTextareaProps & React.HTMLProps<HTMLTextAreaElement>> = ({
+type DefaultProps = BTextareaProps & React.HTMLProps<HTMLTextAreaElement>;
+
+interface TextareaProps extends DefaultProps{
+  hasError?: boolean;
+}
+
+const Textarea: React.FC<TextareaProps> = ({
+  hasError,
   ...props
 }) => (
   <BFormControl
-    className={styles.textarea}
+    className={classnames(styles.textarea, {
+      [styles.error]: hasError,
+    })}
     as="textarea"
-    rows={3}
     {...props}
   />
 );

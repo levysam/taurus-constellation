@@ -4,6 +4,7 @@ import { container } from 'tsyringe';
 import CreateGroupService from '../../services/CreateGroupService';
 import DeleteGroupService from '../../services/DeleteGroupService';
 import ListGroupService from '../../services/ListGroupService';
+import ShowGroupDashboardService from '../../services/ShowGroupDashboardService';
 import ShowGroupService from '../../services/ShowGroupService';
 import UpdateGroupService from '../../services/UpdateGroupService';
 
@@ -43,6 +44,15 @@ class GroupController {
     const showGroup = container.resolve(ShowGroupService);
     const group = await showGroup.execute(String(id));
     return response.json(classToClass(group));
+  }
+
+  public async showDashboard(request: Request, response: Response): Promise<Response> {
+    const {
+      id,
+    } = request.params;
+    const showGroupDashboard = container.resolve(ShowGroupDashboardService);
+    const groupDashboard = await showGroupDashboard.execute(String(id));
+    return response.json(groupDashboard);
   }
 
   public async update(request: Request, response: Response): Promise<Response> {

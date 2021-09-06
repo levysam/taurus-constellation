@@ -13,6 +13,7 @@ export interface DataTablePagination {
 }
 
 interface DataTableProps extends Omit<BootstrapTableProps, 'pagination'> {
+  className?: string;
   title: string;
   tools?: React.ReactNode;
   enablePagination?: boolean;
@@ -21,6 +22,7 @@ interface DataTableProps extends Omit<BootstrapTableProps, 'pagination'> {
 }
 
 const DataTable: React.FC<DataTableProps> = ({
+  className,
   title,
   tools,
   enablePagination,
@@ -45,7 +47,7 @@ const DataTable: React.FC<DataTableProps> = ({
   }, [pagination]);
 
   return (
-    <Card className={styles.dataTable}>
+    <Card className={`${styles.dataTable} ${className}`}>
       <CardHeader className={styles.header}>
         <CardTitle>
           {title}

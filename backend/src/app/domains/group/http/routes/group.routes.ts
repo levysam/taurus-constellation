@@ -26,6 +26,11 @@ router.get(
   groupController.show,
 );
 
+router.get(
+  '/:id/dashboard',
+  groupController.showDashboard,
+);
+
 router.put(
   '/:id',
   celebrate({

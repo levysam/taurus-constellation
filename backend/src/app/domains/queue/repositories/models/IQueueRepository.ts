@@ -7,6 +7,7 @@ interface IQueueRepository {
   find(id: string): Promise<Queue | undefined>;
   findAll(): Promise<Queue[]>;
   findByGroup(groupId: string): Promise<Queue[]>;
+  findByIds(ids: string[]): Promise<Queue[]>;
   save(queue: Queue): Promise<Queue>;
 }
 

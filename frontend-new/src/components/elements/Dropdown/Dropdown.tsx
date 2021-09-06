@@ -4,7 +4,8 @@ import styles from './styles.module.scss';
 
 interface DropdownOption {
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
+  isDivider?: boolean;
 }
 
 interface DropdownProps {
@@ -24,14 +25,18 @@ const Dropdown: React.FC<DropdownProps> = ({
     <BDropdown.Menu className={styles.menu}>
       {
         options.map((option) => (
-          <BDropdown.Item
-            key={option.label}
-            className={styles.option}
-            href="#"
-            onClick={option.onClick}
-          >
-            {option.label}
-          </BDropdown.Item>
+          option.isDivider
+            ? <BDropdown.Divider key={option.label} />
+            : (
+              <BDropdown.Item
+                key={option.label}
+                className={styles.option}
+                href="#"
+                onClick={option.onClick}
+              >
+                {option.label}
+              </BDropdown.Item>
+            )
         ))
       }
     </BDropdown.Menu>

@@ -58,6 +58,11 @@ class QueueRepository implements IQueueRepository {
     return queues;
   }
 
+  public async findByIds(ids: string[]): Promise<Queue[]> {
+    const queues = await this.ormRepository.findByIds(ids);
+    return queues;
+  }
+
   public async save(queue: Queue): Promise<Queue> {
     return this.ormRepository.save(queue);
   }
