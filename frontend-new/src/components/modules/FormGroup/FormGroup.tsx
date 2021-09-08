@@ -8,6 +8,7 @@ interface FormGroupProps {
   label: string;
   required?: boolean;
   error?: string;
+  className?: string;
 }
 
 const FormGroup: React.FC<FormGroupProps> = ({
@@ -15,8 +16,9 @@ const FormGroup: React.FC<FormGroupProps> = ({
   error,
   required,
   label,
+  className,
 }) => (
-  <BFormGroup className={styles.formGroup}>
+  <BFormGroup className={`${styles.formGroup} ${className}`}>
     <BFormLabel className={styles.label}>
       {label}
       {

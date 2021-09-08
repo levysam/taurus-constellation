@@ -9,6 +9,7 @@ import GroupsList from '../pages/Groups/List/List';
 import JobsDetail from '../pages/Dashboard/Jobs/Detail/Detail';
 import JobsForm from '../pages/Dashboard/Jobs/Form/Form';
 import JobsList from '../pages/Dashboard/Jobs/List/List';
+import Login from '../pages/Login/Login';
 import QueueDashboard from '../pages/Dashboard/Queue/QueueDashboard';
 import QueuesForm from '../pages/Queues/Form/Form';
 import QueuesList from '../pages/Queues/List/List';
@@ -33,6 +34,7 @@ const Routes: React.FC = () => (
     <Route path="/users/form" exact component={UsersForm} />
     <Route path="/users/:id" exact component={UsersForm} />
     <Route path="/account" exact component={Account} />
+    <Route path="/login" exact component={Login} />
   </Switch>
 );
 

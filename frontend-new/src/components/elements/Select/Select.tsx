@@ -42,7 +42,7 @@ const Select: React.FC<SelectProps> = ({
   return (
     <ReactSelect
       styles={{
-        control: (styles, { isDisabled }) => ({
+        control: (styles) => ({
           ...styles,
           backgroundColor: 'var(--dark)',
           borderWidth: '2px',
