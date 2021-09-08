@@ -70,6 +70,7 @@ const GroupsList: React.FC = () => {
         keyField="id"
         columns={columns}
         data={groups}
+        noDataIndication="No groups found"
         rowEvents={{
           onClick: (_, group) => { history.push(`/groups/${group.id}`); },
         }}

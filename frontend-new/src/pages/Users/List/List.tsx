@@ -72,6 +72,7 @@ const UsersList: React.FC = () => {
         keyField="id"
         columns={columns}
         data={users}
+        noDataIndication="No users found"
         rowEvents={{
           onClick: (_, user) => { history.push(`/users/${user.id}`); },
         }}

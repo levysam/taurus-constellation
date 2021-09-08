@@ -8,7 +8,9 @@ import {
 import * as Yup from 'yup';
 import Button from '../../../components/elements/Button/Button';
 import Card, { CardFooter, CardHeader, CardTitle } from '../../../components/elements/Card/Card';
+import ConfirmationModal from '../../../components/modules/ConfirmationModal/ConfirmationModal';
 import Default from '../../../components/layouts/Default/Default';
+import Dropdown from '../../../components/elements/Dropdown/Dropdown';
 import FormGroup from '../../../components/modules/FormGroup/FormGroup';
 import Input from '../../../components/elements/Input/Input';
 import Loader from '../../../components/elements/Loader/Loader';
@@ -53,6 +55,7 @@ const UsersForm: React.FC = () => {
     groupIds: [],
   } as User);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showRemoveModal, setShowRemoveModal] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const roles: SelectOption[] = [
     { label: 'Guest', value: 'guest' },
@@ -130,6 +133,19 @@ const UsersForm: React.FC = () => {
   }, [id, user]);
 
   /**
+   * Delete user.
+   */
+  const deleteUser = useCallback(async (): Promise<void> => {
+    setLoading(true);
+    try {
+      await api.delete(`/user/${id}`);
+      history.goBack();
+    } catch (error) {
+      setLoading(false);
+    }
+  }, [id]);
+
+  /**
    * Handle form submit.
    */
   const handleSubmit = useCallback(async (): Promise<void> => {
@@ -158,11 +174,34 @@ const UsersForm: React.FC = () => {
         && <Loader />
       }
 
+      <ConfirmationModal
+        title="Delete User"
+        show={showRemoveModal}
+        onConfirm={deleteUser}
+        onCancel={() => { setShowRemoveModal(false); }}
+      >
+        Do you want to delete this user?
+      </ConfirmationModal>
+
       <Card>
         <CardHeader>
           <CardTitle>
-            Create User
+            {id ? 'Edit User' : 'Create User'}
           </CardTitle>
+          {
+            id
+            && (
+              <Dropdown
+                title="Actions"
+                options={[
+                  {
+                    label: 'Delete',
+                    onClick: () => { setShowRemoveModal(true); },
+                  },
+                ]}
+              />
+            )
+          }
         </CardHeader>
 
         <Container fluid>

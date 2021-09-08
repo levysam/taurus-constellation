@@ -5,6 +5,7 @@ import DataTable, { DataTableColumn } from '../../../components/modules/DataTabl
 import Default from '../../../components/layouts/Default/Default';
 import Dropdown from '../../../components/elements/Dropdown/Dropdown';
 import Loader from '../../../components/elements/Loader/Loader';
+import PageHeader from '../../../components/modules/PageHeader/PageHeader';
 import api from '../../../services/api';
 import styles from './styles.module.scss';
 
@@ -179,6 +180,7 @@ const MainDashboard: React.FC = () => {
       headerStyle: () => ({
         width: '10%',
       }),
+      classes: styles.numberColumn,
     },
     {
       dataField: 'jobCounts.paused',
@@ -186,6 +188,7 @@ const MainDashboard: React.FC = () => {
       headerStyle: () => ({
         width: '10%',
       }),
+      classes: styles.numberColumn,
     },
     {
       dataField: 'jobCounts.active',
@@ -193,6 +196,7 @@ const MainDashboard: React.FC = () => {
       headerStyle: () => ({
         width: '10%',
       }),
+      classes: styles.numberColumn,
     },
     {
       dataField: 'jobCounts.delayed',
@@ -200,6 +204,7 @@ const MainDashboard: React.FC = () => {
       headerStyle: () => ({
         width: '10%',
       }),
+      classes: styles.numberColumn,
     },
     {
       dataField: 'jobCounts.failed',
@@ -207,6 +212,7 @@ const MainDashboard: React.FC = () => {
       headerStyle: () => ({
         width: '10%',
       }),
+      classes: styles.numberColumn,
     },
   ];
 
@@ -217,18 +223,33 @@ const MainDashboard: React.FC = () => {
         && <Loader />
       }
 
-      <div className={styles.toolbar}>
-        <h2>Dashboard</h2>
-        <div>
-          <Dropdown
-            title="Actions"
-            options={[
-              { label: 'Pause', onClick: pauseQueues },
-              { label: 'Resume', onClick: resumeQueues },
-            ]}
-          />
-        </div>
-      </div>
+      <PageHeader
+        title="Dashboard"
+        tools={(
+          <>
+            <Dropdown
+              title="Actions"
+              options={[
+                {
+                  label: 'Pause',
+                  onClick: pauseQueues,
+                },
+                {
+                  label: 'Resume',
+                  onClick: resumeQueues,
+                },
+              ]}
+            />
+          </>
+        )}
+      />
+
+      {
+        groupDashboards.length === 0
+        && (
+          <span>No groups found</span>
+        )
+      }
 
       {
         groupDashboards.map((item) => (

@@ -80,6 +80,7 @@ const QueuesList: React.FC = () => {
         keyField="id"
         columns={columns}
         data={queues}
+        noDataIndication="No queues found"
         rowEvents={{
           onClick: (_, queue) => { history.push(`/queues/${queue.id}`); },
         }}

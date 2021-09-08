@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChartArea,
-  faCog,
+  faObjectGroup,
   faStream,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -15,51 +16,86 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({
   collapsed,
-}) => (
-  <div className={classnames(styles.sidebar, {
-    [styles.collapsed]: collapsed,
-  })}
-  >
-    <div className={styles.brand}>
-      Taurus Constellation
-    </div>
+}) => {
+  const history = useHistory();
 
-    <div className={styles.item}>
-      <span className={styles.icon}>
-        <FontAwesomeIcon icon={faChartArea} />
-      </span>
-      <span className={styles.text}>
-        Dashboard
-      </span>
-    </div>
+  /**
+   * Open page.
+   */
+  const openPage = useCallback((page: string) => {
+    history.push(page);
+  }, [history]);
 
-    <div className={styles.item}>
-      <span className={styles.icon}>
-        <FontAwesomeIcon icon={faStream} />
-      </span>
-      <span className={styles.text}>
-        Queues
-      </span>
-    </div>
+  return (
+    <div className={classnames(styles.sidebar, {
+      [styles.collapsed]: collapsed,
+    })}
+    >
+      <div className={styles.brand}>
+        {collapsed ? 'TC' : 'Taurus Constellation'}
+      </div>
 
-    <div className={styles.item}>
-      <span className={styles.icon}>
-        <FontAwesomeIcon icon={faCog} />
-      </span>
-      <span className={styles.text}>
-        Settings
-      </span>
-    </div>
+      <div
+        className={styles.item}
+        onClick={() => { openPage('/'); }}
+        onKeyDown={() => { openPage('/'); }}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.icon}>
+          <FontAwesomeIcon icon={faChartArea} />
+        </span>
+        <span className={styles.text}>
+          Dashboard
+        </span>
+      </div>
 
-    <div className={styles.item}>
-      <span className={styles.icon}>
-        <FontAwesomeIcon icon={faUser} />
-      </span>
-      <span className={styles.text}>
-        Users
-      </span>
+      <div
+        className={styles.item}
+        onClick={() => { openPage('/groups'); }}
+        onKeyDown={() => { openPage('/groups'); }}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.icon}>
+          <FontAwesomeIcon icon={faObjectGroup} />
+        </span>
+        <span className={styles.text}>
+          Groups
+        </span>
+      </div>
+
+      <div
+        className={styles.item}
+        onClick={() => { openPage('/queues'); }}
+        onKeyDown={() => { openPage('/queues'); }}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.icon}>
+          <FontAwesomeIcon icon={faStream} />
+        </span>
+        <span className={styles.text}>
+          Queues
+        </span>
+      </div>
+
+      <div
+        className={styles.item}
+        onClick={() => { openPage('/users'); }}
+        onKeyDown={() => { openPage('/users'); }}
+        role="button"
+        tabIndex={0}
+      >
+        <span className={styles.icon}>
+          <FontAwesomeIcon icon={faUser} />
+        </span>
+        <span className={styles.text}>
+          Users
+        </span>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Sidebar;

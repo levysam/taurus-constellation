@@ -29,6 +29,7 @@ const Routes: React.FC = () => (
     <Route path="/queues/:queueId/jobs/:jobId" exact component={JobsDetail} />
     <Route path="/groups" exact component={GroupsList} />
     <Route path="/users" exact component={UsersList} />
+    <Route path="/users/form" exact component={UsersForm} />
     <Route path="/users/:id" exact component={UsersForm} />
   </Switch>
 );

@@ -29,7 +29,9 @@ class GroupRepository implements IGroupRepository {
   }
 
   public async find(id: string): Promise<Group | undefined> {
-    const group = await this.ormRepository.findOne(id);
+    const group = await this.ormRepository.findOne(id, {
+      relations: ['queues'],
+    });
     return group;
   }
 

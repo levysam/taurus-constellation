@@ -19,16 +19,25 @@ interface GroupsFormParams {
   id?: string;
 }
 
+interface Queue {
+  id: string;
+}
+
 interface Group {
   id?: string;
   name: string;
   description?: string;
+  queues: Queue[];
 }
 
 const GroupsForm: React.FC = () => {
   const history = useHistory();
   const { id } = useParams<GroupsFormParams>();
-  const [group, setGroup] = useState<Group>({} as Group);
+  const [group, setGroup] = useState<Group>({
+    name: '',
+    description: '',
+    queues: [],
+  } as Group);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -107,7 +116,7 @@ const GroupsForm: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle>
-            Create Group
+            {id ? 'Edit Group' : 'Create Group'}
           </CardTitle>
         </CardHeader>
 
@@ -155,6 +164,15 @@ const GroupsForm: React.FC = () => {
                 />
               </FormGroup>
             </Col>
+
+            {
+              id
+              && (
+                <Col xs={12} md={6}>
+                  <span>{group.queues.length} queue(s) in this group.</span>
+                </Col>
+              )
+            }
 
           </Row>
         </Container>
