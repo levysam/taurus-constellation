@@ -1,13 +1,12 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
-  faIdCard,
-  faSignOutAlt,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import Dropdown from '../../elements/Dropdown/Dropdown';
 import styles from './styles.module.scss';
 
 interface TopbarProps {
@@ -19,11 +18,7 @@ const Topbar: React.FC<TopbarProps> = ({
   collapsed,
   toggle,
 }) => {
-  const [actionsOpen, setActionsOpen] = useState(false);
-
-  const toggleActions = (): void => {
-    setActionsOpen(!actionsOpen);
-  };
+  const history = useHistory();
 
   return (
     <div className={classnames(styles.topbar, {
@@ -40,44 +35,33 @@ const Topbar: React.FC<TopbarProps> = ({
         <FontAwesomeIcon icon={faBars} />
       </a>
 
-      <div
-        role="button"
-        tabIndex={0}
+      <Dropdown
         className={styles.profile}
-        onClick={toggleActions}
-        onKeyDown={toggleActions}
-      >
-        <div className={styles.icon}>
-          <FontAwesomeIcon icon={faUser} />
-        </div>
-        <span className={styles.name}>
-          Pedro
-        </span>
-      </div>
-
-      {
-        actionsOpen
-        && (
-        <div className={styles.profileActions}>
-          <div className={styles.option}>
-            <span className={styles.icon}>
-              <FontAwesomeIcon icon={faIdCard} />
-            </span>
-            <span className={styles.text}>
-              My Account
+        title={(
+          <div className={styles.info}>
+            <div className={styles.icon}>
+              <FontAwesomeIcon icon={faUser} />
+            </div>
+            <span className={styles.name}>
+              Pedro
             </span>
           </div>
-          <div className={styles.option}>
-            <span className={styles.icon}>
-              <FontAwesomeIcon icon={faSignOutAlt} />
-            </span>
-            <span className={styles.text}>
-              Sign Out
-            </span>
-          </div>
-        </div>
-        )
-      }
+        )}
+        options={[
+          {
+            label: 'My account',
+            onClick: () => { history.push('/account'); },
+          },
+          {
+            label: 'divider',
+            isDivider: true,
+          },
+          {
+            label: 'Sign out',
+            onClick: () => { console.log('my account'); },
+          },
+        ]}
+      />
     </div>
   );
 };

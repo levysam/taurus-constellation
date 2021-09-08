@@ -1,7 +1,9 @@
 .dropdown {
   .toggle {
+    align-items: center;
     background-color: var(--gray0);
     border: 1px solid var(--dark);
+    display: flex;
     border-radius: 5px;
     box-shadow: 0 5px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
     font-size: var(--font-size);

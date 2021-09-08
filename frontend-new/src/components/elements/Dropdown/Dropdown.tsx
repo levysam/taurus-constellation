@@ -10,15 +10,17 @@ export interface DropdownOption {
 }
 
 interface DropdownProps {
-  title: string;
+  title: string | React.ReactNode;
   options: DropdownOption[];
+  className?: string;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   title,
   options,
+  className,
 }) => (
-  <BDropdown className={styles.dropdown}>
+  <BDropdown className={`${styles.dropdown} ${className}`}>
     <BDropdown.Toggle className={styles.toggle}>
       {title}
     </BDropdown.Toggle>

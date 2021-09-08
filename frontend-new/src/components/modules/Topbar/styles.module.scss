@@ -15,61 +15,43 @@
 
   .toggler {
     cursor: pointer;
+    flex: 1;
   }
 
   .profile {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    justify-content: flex-end;
-    margin-left: auto;
-    width: 200px;
+    > button {
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+    }
 
-    .icon {
-      background-color: var(--primary);
-      display: flex;
+    .info {
       align-items: center;
-      border: 2px solid var(--white);
-      border-radius: 50px;
-      min-height: 30px;
-      justify-content: center;
-      min-width: 30px;
-    }
-
-    .name {
-      display: none;
-      font-weight: 600;
-      margin-left: 8px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      @media only screen and (min-width: 768px) {
-        display: block;
-      }
-    }
-  }
-
-  .profileActions {
-    background: var(--gray0);
-    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
-    border-radius: 5px;
-    right: 20px;
-    top: 65px;
-    padding: 5px 20px;
-    position: fixed;
-
-    .option {
-      color: var(--gray2);
       cursor: pointer;
-      padding: 5px 0px;
+      display: flex;
 
       .icon {
-        margin-right: 10px;
+        background-color: var(--primary);
+        display: flex;
+        align-items: center;
+        border: 2px solid var(--white);
+        border-radius: 50px;
+        min-height: 30px;
+        justify-content: center;
+        min-width: 30px;
       }
 
-      &:hover {
-        color: var(--white);
+      .name {
+        display: none;
+        font-weight: 600;
+        margin-left: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @media only screen and (min-width: 768px) {
+          display: block;
+        }
       }
     }
   }

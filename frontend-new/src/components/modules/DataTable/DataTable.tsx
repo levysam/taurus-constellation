@@ -68,6 +68,7 @@ const DataTable: React.FC<DataTableProps> = ({
         headerClasses={styles.header}
         rowClasses={styles.row}
         hover
+        wrapperClasses="table-responsive"
         {...props}
       />
 

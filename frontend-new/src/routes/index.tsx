@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch } from 'react-router-dom';
 import Route from './Route';
 
+import Account from '../pages/Account/Account';
 import MainDashboard from '../pages/Dashboard/Main/MainDashboard';
 import GroupsForm from '../pages/Groups/Form/Form';
 import GroupsList from '../pages/Groups/List/List';
@@ -31,6 +32,7 @@ const Routes: React.FC = () => (
     <Route path="/users" exact component={UsersList} />
     <Route path="/users/form" exact component={UsersForm} />
     <Route path="/users/:id" exact component={UsersForm} />
+    <Route path="/account" exact component={Account} />
   </Switch>
 );
 

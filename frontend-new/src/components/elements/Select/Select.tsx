@@ -42,7 +42,7 @@ const Select: React.FC<SelectProps> = ({
   return (
     <ReactSelect
       styles={{
-        control: (styles) => ({
+        control: (styles, { isDisabled }) => ({
           ...styles,
           backgroundColor: 'var(--dark)',
           borderWidth: '2px',
@@ -87,13 +87,13 @@ const Select: React.FC<SelectProps> = ({
             color: 'var(--white)',
           },
         }),
-        singleValue: (styles) => ({
+        singleValue: (styles, { isDisabled }) => ({
           ...styles,
-          color: 'var(--white)',
+          color: isDisabled ? 'var(--gray2)' : 'var(--white)',
         }),
-        multiValue: (styles) => ({
+        multiValue: (styles, { isDisabled }) => ({
           ...styles,
-          backgroundColor: 'var(--gray2)',
+          backgroundColor: isDisabled ? 'var(--gray1)' : 'var(--gray2)',
         }),
         multiValueLabel: (styles) => ({
           ...styles,
