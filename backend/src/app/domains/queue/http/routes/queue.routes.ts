@@ -159,6 +159,17 @@ router.get(
   queueController.showDashboard,
 );
 
+router.get(
+  '/:queueId/job/:jobId',
+  celebrate({
+    [Segments.PARAMS]: {
+      queueId: Joi.string().required(),
+      jobId: Joi.string().required(),
+    },
+  }),
+  queueController.showJob,
+);
+
 router.put(
   '/:id',
   celebrate({

@@ -9,6 +9,8 @@ export type QueueJobCounts = {
   completed: number;
 };
 
+export type JobState = 'waiting' | 'active' | 'delayed' | 'failed' | 'completed';
+
 export type Job = {
   id: string;
   data: any;
@@ -16,8 +18,7 @@ export type Job = {
   name: string;
   timestamp: number;
   dateTime: string;
+  state: JobState;
 };
-
-export type JobState = 'waiting' | 'active' | 'delayed' | 'failed' | 'completed';
 
 export default QueueStatus;

@@ -2,10 +2,11 @@ import React from 'react';
 import BDropdown from 'react-bootstrap/Dropdown';
 import styles from './styles.module.scss';
 
-interface DropdownOption {
+export interface DropdownOption {
   label: string;
   onClick?: () => void;
   isDivider?: boolean;
+  disabled?: boolean;
 }
 
 interface DropdownProps {
@@ -33,6 +34,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                 className={styles.option}
                 href="#"
                 onClick={option.onClick}
+                disabled={option.disabled}
               >
                 {option.label}
               </BDropdown.Item>

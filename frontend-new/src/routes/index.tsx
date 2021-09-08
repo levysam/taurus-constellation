@@ -5,6 +5,7 @@ import Route from './Route';
 import MainDashboard from '../pages/Dashboard/Main/MainDashboard';
 import GroupsForm from '../pages/Groups/Form/Form';
 import GroupsList from '../pages/Groups/List/List';
+import JobsDetail from '../pages/Dashboard/Jobs/Detail/Detail';
 import JobsForm from '../pages/Dashboard/Jobs/Form/Form';
 import JobsList from '../pages/Dashboard/Jobs/List/List';
 import QueueDashboard from '../pages/Dashboard/Queue/QueueDashboard';
@@ -24,7 +25,8 @@ const Routes: React.FC = () => (
     <Route path="/queues/form" exact component={QueuesForm} />
     <Route path="/queues/:id" exact component={QueuesForm} />
     <Route path="/queues/:queueId/jobs/form" exact component={JobsForm} />
-    <Route path="/queues/:queueId/jobs/:state" exact component={JobsList} />
+    <Route path="/queues/:queueId/jobs" exact component={JobsList} />
+    <Route path="/queues/:queueId/jobs/:jobId" exact component={JobsDetail} />
     <Route path="/groups" exact component={GroupsList} />
     <Route path="/users" exact component={UsersList} />
     <Route path="/users/:id" exact component={UsersForm} />

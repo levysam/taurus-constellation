@@ -21,7 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   })}
   >
     <div className={styles.brand}>
-      T
+      Taurus Constellation
     </div>
 
     <div className={styles.item}>

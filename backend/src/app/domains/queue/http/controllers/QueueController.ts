@@ -7,6 +7,7 @@ import CreateJobService from '../../../job/services/CreateJobService';
 import DeleteJobService from '../../../job/services/DeleteJobService';
 import ListJobService from '../../../job/services/ListJobService';
 import RetryJobService from '../../../job/services/RetryJobService';
+import ShowJobService from '../../../job/services/ShowJobService';
 import CreateQueueService from '../../services/CreateQueueService';
 import DeleteQueueService from '../../services/DeleteQueueService';
 import ListQueueService from '../../services/ListQueueService';
@@ -196,6 +197,19 @@ class QueueController {
       id,
     });
     return response.json(queueDashboard);
+  }
+
+  public async showJob(request: Request, response: Response): Promise<Response> {
+    const {
+      queueId,
+      jobId,
+    } = request.params;
+    const showJob = container.resolve(ShowJobService);
+    const job = await showJob.execute({
+      queueId,
+      jobId,
+    });
+    return response.json(job);
   }
 
   public async update(request: Request, response: Response): Promise<Response> {

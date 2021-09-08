@@ -1,0 +1,41 @@
+.infoCard {
+  background: var(--gray0);
+  border-left: 4px solid var(--primary);
+  border-radius: 5px;
+  box-shadow: 0 5px 35px rgba(0, 0, 0, 0.20), 0 5px 12px rgba(0, 0, 0, 0.22);
+  padding: 20px;
+
+  &.primary {
+    border-left: 4px solid var(--primary);
+
+    .label {
+      color: var(--primary);
+    }
+  }
+
+  &.success {
+    border-left: 4px solid var(--success);
+
+    .label {
+      color: var(--success);
+    }
+  }
+
+  &.danger {
+    border-left: 4px solid var(--danger);
+
+    .label {
+      color: var(--danger);
+    }
+  }
+
+  .label {
+    color: var(--primary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .value {
+    font-size: 1.2em;
+  }
+}

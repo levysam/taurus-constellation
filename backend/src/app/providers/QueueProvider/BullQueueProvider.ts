@@ -70,9 +70,17 @@ class BullQueueProvider implements IQueueProvider {
     if (!job) {
       return undefined;
     }
+
+    const state = await job.getState();
+
     return {
-      ...job,
-      dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD'),
+      id: job.id,
+      data: job.data,
+      attemptsMade: job.attemptsMade,
+      name: job.name,
+      timestamp: job.timestamp,
+      dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD H:m:s'),
+      state,
     } as Job;
   }
 
@@ -112,6 +120,7 @@ class BullQueueProvider implements IQueueProvider {
       name: job.name,
       timestamp: job.timestamp,
       dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD H:m:s'),
+      state,
     }));
   }
 

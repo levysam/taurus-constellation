@@ -21,7 +21,7 @@ class ShowJobService {
   public async execute({
     queueId,
     jobId,
-  }: IRequest): Promise<Job> {
+  }: IRequest): Promise<Job | undefined> {
     const queue = await this.queueRepository.find(queueId);
     if (!queue) {
       throw new CustomError('Queue not found', 404);
