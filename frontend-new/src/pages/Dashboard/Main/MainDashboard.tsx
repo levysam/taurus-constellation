@@ -72,7 +72,7 @@ const MainDashboard: React.FC = () => {
     content: string,
   ) => {
     const { id } = queue;
-    const href = `/queues/${id}/jobs?state=${state}`;
+    const href = `/dashboard/queues/${id}/${state}/jobs`;
 
     return (
       <span

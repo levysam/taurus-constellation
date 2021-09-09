@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import Breadcrumb from '../../../../components/modules/Breadcrumb/Breadcrumb';
 import DataTable, { DataTableColumn, DataTablePagination } from '../../../../components/modules/DataTable/DataTable';
 import Default from '../../../../components/layouts/Default/Default';
 import Dropdown, { DropdownOption } from '../../../../components/elements/Dropdown/Dropdown';
@@ -11,6 +12,7 @@ import { PaginationSize } from '../../../../components/modules/Pagination/Pagina
 
 interface JobListParams {
   queueId: string;
+  state: string;
 }
 
 interface Queue {
@@ -28,11 +30,9 @@ interface JobResponse {
   total: number;
 }
 
-const useQuery = (): URLSearchParams => new URLSearchParams(useLocation().search);
-
 const JobsList: React.FC = () => {
   const history = useHistory();
-  const { queueId } = useParams<JobListParams>();
+  const { queueId, state } = useParams<JobListParams>();
   const [queue, setQueue] = useState<Queue>({} as Queue);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [pagination, setPagination] = useState<DataTablePagination>({
@@ -42,8 +42,6 @@ const JobsList: React.FC = () => {
   });
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const query = useQuery();
-  const state = query.get('state');
 
   const loadQueue = useCallback(async () => {
     setLoading(true);
@@ -148,6 +146,44 @@ const JobsList: React.FC = () => {
     }
   }, [jobs]);
 
+  /**
+   * Get dropdown options.
+   */
+  const getDropdownOptions = useCallback((): DropdownOption[] => {
+    const options: DropdownOption[] = [
+      {
+        label: 'Retry selected',
+        onClick: () => { retrySelected(); },
+      },
+      {
+        label: 'Retry all',
+        onClick: () => { retryAll(); },
+      },
+      {
+        label: 'remove-section',
+        isDivider: true,
+      },
+      {
+        label: 'Remove selected',
+        onClick: () => { removeSelected(); },
+      },
+    ];
+
+    if (state === 'waiting') {
+      options.unshift({
+        label: 'Create',
+        onClick: () => {
+          history.push(`/dashboard/queues/${queueId}/${state}/jobs/form`);
+        },
+      }, {
+        label: 'retry-section',
+        isDivider: true,
+      });
+    }
+
+    return options;
+  }, [history]);
+
   useEffect(() => {
     loadQueue();
     loadJobs();
@@ -205,42 +241,20 @@ const JobsList: React.FC = () => {
     },
   ];
 
-  /**
-   * Data table actions.
-   */
-  const actions: DropdownOption[] = [
-    {
-      label: 'Create',
-      onClick: () => { history.push(`/queues/${queueId}/jobs/form`); },
-    },
-    {
-      label: 'retry-section',
-      isDivider: true,
-    },
-    {
-      label: 'Retry selected',
-      onClick: () => { retrySelected(); },
-    },
-    {
-      label: 'Retry all',
-      onClick: () => { retryAll(); },
-    },
-    {
-      label: 'remove-section',
-      isDivider: true,
-    },
-    {
-      label: 'Remove selected',
-      onClick: () => { removeSelected(); },
-    },
-  ];
-
   return (
     <Default>
       {
         loading
         && <Loader />
       }
+
+      <Breadcrumb
+        items={[
+          { label: 'Dashboard', path: '/dashboard' },
+          { label: queue.name || '', path: `/dashboard/queues/${queue.id}` },
+          { label: `${capitalize(state)} Jobs`, path: `/dashboard/queues/${queue.id}/${state}/jobs` },
+        ]}
+      />
 
       <PageHeader
         title={queue.name}
@@ -254,7 +268,7 @@ const JobsList: React.FC = () => {
           <>
             <Dropdown
               title="Actions"
-              options={actions}
+              options={getDropdownOptions()}
             />
           </>
         )}
@@ -264,7 +278,7 @@ const JobsList: React.FC = () => {
         rowEvents={{
           onClick: (_, row) => {
             const { id } = row;
-            history.push(`/queues/${queueId}/jobs/${id}`);
+            history.push(`/dashboard/queues/${queueId}/${state}/jobs/${id}`);
           },
         }}
         selectRow={{

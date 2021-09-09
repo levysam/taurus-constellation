@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { celebrate, Segments, Joi } from 'celebrate';
 import GroupController from '../controllers/GroupController';
+import checkAuth from '../../../user/http/middlewares/checkAuth';
 
 const router = Router();
 const groupController = new GroupController();
+
+router.use(checkAuth);
 
 router.post(
   '/',

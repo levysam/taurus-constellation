@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useHistory, useParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
+import Breadcrumb from '../../../components/modules/Breadcrumb/Breadcrumb';
 import ConfirmationModal from '../../../components/modules/ConfirmationModal/ConfirmationModal';
 import Default from '../../../components/layouts/Default/Default';
 import Dropdown from '../../../components/elements/Dropdown/Dropdown';
@@ -101,7 +102,7 @@ const QueueDashboard: React.FC = () => {
    * Open jobs list.
    */
   const openJobsList = useCallback((state: string) => {
-    history.push(`/queues/${id}/jobs?state=${state}`);
+    history.push(`/dashboard/queues/${id}/${state}/jobs`);
   }, [id]);
 
   useEffect(() => {
@@ -114,6 +115,13 @@ const QueueDashboard: React.FC = () => {
         loading
         && <Loader />
       }
+
+      <Breadcrumb
+        items={[
+          { label: 'Dashboard', path: '/dashboard' },
+          { label: queue.name || '', path: `/dashboard/queues/${id}` },
+        ]}
+      />
 
       <ConfirmationModal
         show={showPauseModal}

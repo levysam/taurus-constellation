@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
   Col,
@@ -6,6 +6,7 @@ import {
   Row,
 } from 'react-bootstrap';
 import * as Yup from 'yup';
+import Breadcrumb from '../../../../components/modules/Breadcrumb/Breadcrumb';
 import Button from '../../../../components/elements/Button/Button';
 import Card, { CardFooter, CardHeader, CardTitle } from '../../../../components/elements/Card/Card';
 import Default from '../../../../components/layouts/Default/Default';
@@ -13,10 +14,17 @@ import FormGroup from '../../../../components/modules/FormGroup/FormGroup';
 import Loader from '../../../../components/elements/Loader/Loader';
 import Textarea from '../../../../components/elements/Textarea/Textarea';
 import api from '../../../../services/api';
+import { capitalize } from '../../../../utils/stringUtils';
 import extractValidationErrors, { ValidationErrors } from '../../../../utils/extractValidationErrors';
 
 interface JobsFormParams {
   queueId: string;
+  state: string;
+}
+
+interface Queue {
+  id: string;
+  name: string;
 }
 
 interface Job {
@@ -25,10 +33,29 @@ interface Job {
 
 const JobsForm: React.FC = () => {
   const history = useHistory();
-  const { queueId } = useParams<JobsFormParams>();
+  const { queueId, state } = useParams<JobsFormParams>();
+  const [queue, setQueue] = useState<Queue>({} as Queue);
   const [job, setJob] = useState<Job>({} as Job);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
+
+  /**
+   * Load queue.
+   */
+  const loadQueue = useCallback(async (): Promise<void> => {
+    const { data } = await api.get<Queue>(`/queue/${queueId}`);
+    setQueue(data);
+  }, [queueId]);
+
+  useEffect(() => {
+    setLoading(true);
+    try {
+      loadQueue();
+      setLoading(false);
+    } catch {
+      setLoading(false);
+    }
+  }, [history]);
 
   /**
    * Handle form submit.
@@ -65,6 +92,15 @@ const JobsForm: React.FC = () => {
         loading
         && <Loader />
       }
+
+      <Breadcrumb
+        items={[
+          { label: 'Dashboard', path: '/dashboard' },
+          { label: queue.name || '', path: `/dashboard/queues/${queue.id}` },
+          { label: `${capitalize(state)} Jobs`, path: `/dashboard/queues/${queue.id}/${state}/jobs` },
+          { label: 'Form', path: `/dashboard/queues/${queue.id}/${state}/jobs/form` },
+        ]}
+      />
 
       <Card>
         <CardHeader>

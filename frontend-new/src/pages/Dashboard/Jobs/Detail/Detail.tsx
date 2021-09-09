@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import download from 'downloadjs';
+import Breadcrumb from '../../../../components/modules/Breadcrumb/Breadcrumb';
 import ConfirmationModal from '../../../../components/modules/ConfirmationModal/ConfirmationModal';
 import Default from '../../../../components/layouts/Default/Default';
 import Dropdown from '../../../../components/elements/Dropdown/Dropdown';
@@ -14,6 +15,7 @@ import styles from './styles.module.scss';
 
 interface JobsDetailParams {
   queueId: string;
+  state: string;
   jobId: string;
 }
 
@@ -35,10 +37,16 @@ interface Job {
   stacktrace?: JobStacktrace[];
 }
 
+interface Queue {
+  id: string;
+  name: string;
+}
+
 const JobsDetail: React.FC = () => {
   const history = useHistory();
-  const { queueId, jobId } = useParams<JobsDetailParams>();
+  const { queueId, state, jobId } = useParams<JobsDetailParams>();
   const [job, setJob] = useState<Job>({} as Job);
+  const [queue, setQueue] = useState<Queue>({} as Queue);
   const [showRetryModal, setShowRetryModal] = useState<boolean>(false);
   const [showRemoveModal, setShowRemoveModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,9 +59,18 @@ const JobsDetail: React.FC = () => {
     setJob(data);
   }, [queueId, jobId]);
 
+  /**
+   * Load queue.
+   */
+  const loadQueue = useCallback(async () => {
+    const { data } = await api.get<Queue>(`/queue/${queueId}`);
+    setQueue(data);
+  }, [queueId]);
+
   useEffect(() => {
     setLoading(true);
     try {
+      loadQueue();
       loadJob();
       setLoading(false);
     } catch (error) {
@@ -141,6 +158,15 @@ const JobsDetail: React.FC = () => {
         loading
         && <Loader />
       }
+
+      <Breadcrumb
+        items={[
+          { label: 'Dashboard', path: '/dashboard' },
+          { label: queue.name || '', path: `/dashboard/queues/${queue.id}` },
+          { label: `${capitalize(state)} Jobs`, path: `/dashboard/queues/${queue.id}/${state}/jobs` },
+          { label: job.id || '', path: `/dashboard/queues/${queue.id}/${state}/jobs/${job.id}` },
+        ]}
+      />
 
       <ConfirmationModal
         title="Remove Job"

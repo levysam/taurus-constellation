@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { celebrate, Segments, Joi } from 'celebrate';
 import QueueController from '../controllers/QueueController';
+import checkAuth from '../../../user/http/middlewares/checkAuth';
 
 const router = Router();
 const queueController = new QueueController();
+
+router.use(checkAuth);
 
 router.post(
   '/:id/job/:jobId/clone',
