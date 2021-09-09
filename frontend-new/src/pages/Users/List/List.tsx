@@ -42,14 +42,23 @@ const UsersList: React.FC = () => {
     {
       dataField: 'name',
       text: 'Name',
+      headerStyle: () => ({
+        width: '40%',
+      }),
     },
     {
       dataField: 'email',
       text: 'Email',
+      headerStyle: () => ({
+        width: '30%',
+      }),
     },
     {
       dataField: 'role',
       text: 'Role',
+      headerStyle: () => ({
+        width: '30%',
+      }),
     },
   ];
 

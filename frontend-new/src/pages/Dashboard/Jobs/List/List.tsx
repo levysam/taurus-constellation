@@ -158,7 +158,7 @@ const JobsList: React.FC = () => {
       dataField: 'name',
       text: 'Name',
       headerStyle: () => ({
-        width: '10%',
+        width: '35%',
       }),
     },
     {

@@ -1,10 +1,17 @@
 .pageHeader {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 40px;
 
   .title {
     flex: 1;
     margin-bottom: 0px;
+    min-width: 200px;
+
+    span {
+      color: var(--gray2);
+      text-transform: uppercase;
+    }
   }
 }

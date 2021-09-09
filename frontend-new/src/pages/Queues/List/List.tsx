@@ -47,6 +47,9 @@ const QueuesList: React.FC = () => {
     {
       dataField: 'name',
       text: 'Name',
+      headerStyle: () => ({
+        width: '40%',
+      }),
     },
     {
       dataField: 'description',
@@ -54,10 +57,16 @@ const QueuesList: React.FC = () => {
       formatter: (cell: any) => (
         cell || '-'
       ),
+      headerStyle: () => ({
+        width: '40%',
+      }),
     },
     {
       dataField: 'group.name',
       text: 'Group',
+      headerStyle: () => ({
+        width: '20%',
+      }),
     },
   ];
 

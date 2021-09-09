@@ -11,6 +11,7 @@ import ConfirmationModal from '../../../components/modules/ConfirmationModal/Con
 import Default from '../../../components/layouts/Default/Default';
 import Dropdown from '../../../components/elements/Dropdown/Dropdown';
 import Loader from '../../../components/elements/Loader/Loader';
+import PageHeader from '../../../components/modules/PageHeader/PageHeader';
 import StatsCard from '../../../components/modules/StatsCard/StatsCard';
 import api from '../../../services/api';
 import styles from './styles.module.scss';
@@ -132,48 +133,48 @@ const QueueDashboard: React.FC = () => {
         Do you want to resume this queue?
       </ConfirmationModal>
 
-      <div className={styles.toolbar}>
-        <div className={styles.title}>
-          <h2>{queue.name}</h2>
-          <span>Queue dashboard</span>
-        </div>
-        <div className={styles.actions}>
-          <div className={styles.status}>
-            <div className={classnames(styles.icon, {
-              [styles.running]: queue.status === 'running',
-              [styles.paused]: queue.status === 'paused',
-            })}
-            >
-              <FontAwesomeIcon icon={
+      <PageHeader
+        title={queue.name}
+        subtitle="Queue dashboard"
+        tools={(
+          <div className={styles.actions}>
+            <div className={styles.status}>
+              <div className={classnames(styles.icon, {
+                [styles.running]: queue.status === 'running',
+                [styles.paused]: queue.status === 'paused',
+              })}
+              >
+                <FontAwesomeIcon icon={
                 queue.status === 'running'
                   ? faPlayCircle
                   : faPauseCircle
               }
-              />
+                />
+              </div>
+              <span className={styles.value}>
+                {queue.status}
+              </span>
             </div>
-            <span className={styles.value}>
-              {queue.status}
-            </span>
+            <Dropdown
+              title="Actions"
+              options={[
+                {
+                  label: 'Pause',
+                  onClick: () => {
+                    setShowPauseModal(true);
+                  },
+                },
+                {
+                  label: 'Resume',
+                  onClick: () => {
+                    setShowResumeModal(true);
+                  },
+                },
+              ]}
+            />
           </div>
-          <Dropdown
-            title="Actions"
-            options={[
-              {
-                label: 'Pause',
-                onClick: () => {
-                  setShowPauseModal(true);
-                },
-              },
-              {
-                label: 'Resume',
-                onClick: () => {
-                  setShowResumeModal(true);
-                },
-              },
-            ]}
-          />
-        </div>
-      </div>
+        )}
+      />
 
       <Container fluid>
         <Row>

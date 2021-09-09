@@ -41,6 +41,9 @@ const GroupsList: React.FC = () => {
     {
       dataField: 'name',
       text: 'Name',
+      headerStyle: () => ({
+        width: '40%',
+      }),
     },
     {
       dataField: 'description',
@@ -48,6 +51,9 @@ const GroupsList: React.FC = () => {
       formatter: (cell: any) => (
         cell || '-'
       ),
+      headerStyle: () => ({
+        width: '60%',
+      }),
     },
   ];
 
