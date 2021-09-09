@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import * as Yup from 'yup';
 import Auth from '../../components/layouts/Auth/Auth';
@@ -7,6 +8,7 @@ import FormGroup from '../../components/modules/FormGroup/FormGroup';
 import Input from '../../components/elements/Input/Input';
 import Loader from '../../components/elements/Loader/Loader';
 import extractValidationErrors, { ValidationErrors } from '../../utils/extractValidationErrors';
+import { useAuth } from '../../hooks/auth';
 import styles from './styles.module.scss';
 
 interface Data {
@@ -15,17 +17,20 @@ interface Data {
 }
 
 const Login: React.FC = () => {
+  const history = useHistory();
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [data, setData] = useState<Data>({
     email: '',
     password: '',
   });
+  const { signIn } = useAuth();
 
   /**
    * Authenticate user.
    */
-  const authenticate = async (): Promise<void> => {
+  const handleSubmit = async (event: React.SyntheticEvent): Promise<void> => {
+    event.preventDefault();
     setLoading(true);
 
     const schema = Yup.object().shape({
@@ -37,7 +42,8 @@ const Login: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
-      setLoading(false);
+      await signIn(data);
+      history.push('/dashboard');
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         setErrors(
@@ -68,7 +74,10 @@ const Login: React.FC = () => {
                   Taurus Constellation
                 </h2>
               </div>
-              <div className={styles.content}>
+              <form
+                className={styles.content}
+                onSubmit={handleSubmit}
+              >
                 <FormGroup
                   className="mb-1"
                   label="Email"
@@ -107,13 +116,12 @@ const Login: React.FC = () => {
                 </FormGroup>
 
                 <Button
-                  type="button"
+                  type="submit"
                   variant="primary"
-                  onClick={authenticate}
                 >
                   Enter
                 </Button>
-              </div>
+              </form>
             </div>
           </Col>
         </Row>

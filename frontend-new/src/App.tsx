@@ -2,10 +2,13 @@ import React from 'react';
 import './styles/global.scss';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from './routes';
+import AppProvider from './hooks';
 
 const App: React.FC = () => (
   <Router>
-    <Routes />
+    <AppProvider>
+      <Routes />
+    </AppProvider>
   </Router>
 );
 

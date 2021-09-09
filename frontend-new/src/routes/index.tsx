@@ -18,23 +18,23 @@ import UsersForm from '../pages/Users/Form/Form';
 
 const Routes: React.FC = () => (
   <Switch>
-    <Route path="/" exact component={MainDashboard} />
-    <Route path="/dashboard/queues/:id" exact component={QueueDashboard} />
-    <Route path="/groups" exact component={GroupsList} />
-    <Route path="/groups/form" exact component={GroupsForm} />
-    <Route path="/groups/:id" exact component={GroupsForm} />
-    <Route path="/queues" exact component={QueuesList} />
-    <Route path="/queues/form" exact component={QueuesForm} />
-    <Route path="/queues/:id" exact component={QueuesForm} />
-    <Route path="/queues/:queueId/jobs/form" exact component={JobsForm} />
-    <Route path="/queues/:queueId/jobs" exact component={JobsList} />
-    <Route path="/queues/:queueId/jobs/:jobId" exact component={JobsDetail} />
-    <Route path="/groups" exact component={GroupsList} />
-    <Route path="/users" exact component={UsersList} />
-    <Route path="/users/form" exact component={UsersForm} />
-    <Route path="/users/:id" exact component={UsersForm} />
-    <Route path="/account" exact component={Account} />
-    <Route path="/login" exact component={Login} />
+    <Route path="/" exact component={Login} />
+    <Route path="/dashboard" exact component={MainDashboard} isPrivate />
+    <Route path="/dashboard/queues/:id" exact component={QueueDashboard} isPrivate />
+    <Route path="/groups" exact component={GroupsList} isPrivate />
+    <Route path="/groups/form" exact component={GroupsForm} isPrivate />
+    <Route path="/groups/:id" exact component={GroupsForm} isPrivate />
+    <Route path="/queues" exact component={QueuesList} isPrivate />
+    <Route path="/queues/form" exact component={QueuesForm} isPrivate />
+    <Route path="/queues/:id" exact component={QueuesForm} isPrivate />
+    <Route path="/queues/:queueId/jobs/form" exact component={JobsForm} isPrivate />
+    <Route path="/queues/:queueId/jobs" exact component={JobsList} isPrivate />
+    <Route path="/queues/:queueId/jobs/:jobId" exact component={JobsDetail} isPrivate />
+    <Route path="/groups" exact component={GroupsList} isPrivate />
+    <Route path="/users" exact component={UsersList} isPrivate />
+    <Route path="/users/form" exact component={UsersForm} isPrivate />
+    <Route path="/users/:id" exact component={UsersForm} isPrivate />
+    <Route path="/account" exact component={Account} isPrivate />
   </Switch>
 );
 

@@ -43,7 +43,7 @@ router.put(
     [Segments.BODY]: {
       name: Joi.string(),
       email: Joi.string().email(),
-      password: Joi.string(),
+      password: Joi.string().allow(null, ''),
       role: Joi.string(),
       groupIds: Joi.array().items(Joi.string().required()),
     },

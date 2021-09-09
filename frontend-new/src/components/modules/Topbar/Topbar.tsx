@@ -7,6 +7,8 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import Dropdown from '../../elements/Dropdown/Dropdown';
+import { useAuth } from '../../../hooks/auth';
+import { getFirstWord } from '../../../utils/stringUtils';
 import styles from './styles.module.scss';
 
 interface TopbarProps {
@@ -19,6 +21,7 @@ const Topbar: React.FC<TopbarProps> = ({
   toggle,
 }) => {
   const history = useHistory();
+  const { signOut, user } = useAuth();
 
   return (
     <div className={classnames(styles.topbar, {
@@ -43,7 +46,7 @@ const Topbar: React.FC<TopbarProps> = ({
               <FontAwesomeIcon icon={faUser} />
             </div>
             <span className={styles.name}>
-              Pedro
+              {user ? getFirstWord(user.name) : 'User'}
             </span>
           </div>
         )}
@@ -58,7 +61,10 @@ const Topbar: React.FC<TopbarProps> = ({
           },
           {
             label: 'Sign out',
-            onClick: () => { console.log('my account'); },
+            onClick: () => {
+              signOut();
+              history.push('/');
+            },
           },
         ]}
       />
