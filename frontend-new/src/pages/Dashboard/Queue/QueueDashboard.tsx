@@ -100,7 +100,7 @@ const QueueDashboard: React.FC = () => {
    * Open jobs list.
    */
   const openJobsList = useCallback((state: string) => {
-    history.push(`/queues/${id}/jobs/${state}`);
+    history.push(`/queues/${id}/jobs?state=${state}`);
   }, [id]);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
+import download from 'downloadjs';
 import ConfirmationModal from '../../../../components/modules/ConfirmationModal/ConfirmationModal';
 import Default from '../../../../components/layouts/Default/Default';
 import Dropdown from '../../../../components/elements/Dropdown/Dropdown';
@@ -9,10 +10,16 @@ import Loader from '../../../../components/elements/Loader/Loader';
 import PageHeader from '../../../../components/modules/PageHeader/PageHeader';
 import api from '../../../../services/api';
 import { capitalize } from '../../../../utils/stringUtils';
+import styles from './styles.module.scss';
 
 interface JobsDetailParams {
   queueId: string;
   jobId: string;
+}
+
+interface JobStacktrace {
+  order: number;
+  content: string;
 }
 
 interface Job {
@@ -22,6 +29,8 @@ interface Job {
   dateTime: string;
   attemptsMade: number;
   state: string;
+  failedReason?: string;
+  stacktrace?: JobStacktrace[];
 }
 
 const JobsDetail: React.FC = () => {
@@ -86,6 +95,44 @@ const JobsDetail: React.FC = () => {
     }
   }, [jobId]);
 
+  /**
+   * Export job.
+   */
+  const exportJob = useCallback(async () => {
+    setLoading(true);
+    try {
+      const filename = `queue_${queueId}-job_${jobId}.json`;
+      const { data } = await api.get(`/queue/${queueId}/job/${jobId}/export`);
+      download(
+        JSON.stringify(data, null, 2),
+        filename,
+      );
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  }, [jobId]);
+
+  /**
+   * Get formatted job stacktrace.
+   */
+  const getFormattedStacktrace = useCallback(() => {
+    if (!job.stacktrace) {
+      return null;
+    }
+
+    return job.stacktrace.map((item) => (
+      <div
+        className={styles.stacktraceItem}
+        key={item.order}
+      >
+        <pre>
+          {item.content}
+        </pre>
+      </div>
+    ));
+  }, [jobId]);
+
   return (
     <Default>
       {
@@ -123,11 +170,21 @@ const JobsDetail: React.FC = () => {
                   onClick: () => { setShowRetryModal(true); },
                 },
                 {
+                  label: 'divider-1',
+                  isDivider: true,
+                },
+                {
                   label: 'Remove',
                   onClick: () => { setShowRemoveModal(true); },
-                  disabled: true,
                 },
-                { label: 'Export', onClick: () => { console.log('export'); } },
+                {
+                  label: 'divider-2',
+                  isDivider: true,
+                },
+                {
+                  label: 'Export',
+                  onClick: () => { exportJob(); },
+                },
               ]}
             />
           </>
@@ -138,24 +195,28 @@ const JobsDetail: React.FC = () => {
         <Row>
           <Col className="mb-2" md={3}>
             <InfoCard
+              variant="success"
               label="Job Id"
               value={job.id}
             />
           </Col>
           <Col className="mb-2" md={3}>
             <InfoCard
+              variant="success"
               label="State"
               value={job.state ? capitalize(job.state) : ''}
             />
           </Col>
           <Col className="mb-2" md={3}>
             <InfoCard
+              variant="success"
               label="Created at"
               value={job.dateTime}
             />
           </Col>
           <Col className="mb-2" md={3}>
             <InfoCard
+              variant="success"
               label="Attemtps made"
               value={job.attemptsMade}
             />
@@ -163,7 +224,7 @@ const JobsDetail: React.FC = () => {
         </Row>
 
         <Row>
-          <Col md={6}>
+          <Col className="mb-2" md={12}>
             <InfoCard
               label="Data"
               variant="success"
@@ -177,11 +238,25 @@ const JobsDetail: React.FC = () => {
         </Row>
 
         {
-          ['failed', 'delayed'].includes(job.state)
-          && (
+          ['failed', 'delayed'].includes(job.state) && (
             <Row>
-              <Col>
-                teste
+              <Col className="mb-2" md={12}>
+                <InfoCard
+                  label="Reason for failure"
+                  variant="danger"
+                  value={(
+                    <pre>
+                      {job.failedReason}
+                    </pre>
+                  )}
+                />
+              </Col>
+              <Col className="mb-2" md={12}>
+                <InfoCard
+                  label="Stacktraces"
+                  variant="danger"
+                  value={getFormattedStacktrace()}
+                />
               </Col>
             </Row>
           )

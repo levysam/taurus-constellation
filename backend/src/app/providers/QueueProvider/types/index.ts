@@ -9,6 +9,11 @@ export type QueueJobCounts = {
   completed: number;
 };
 
+export type JobStacktrace = {
+  order: number;
+  content: string;
+};
+
 export type JobState = 'waiting' | 'active' | 'delayed' | 'failed' | 'completed';
 
 export type Job = {
@@ -19,6 +24,8 @@ export type Job = {
   timestamp: number;
   dateTime: string;
   state: JobState;
+  failedReason?: string;
+  stacktrace?: JobStacktrace[];
 };
 
 export default QueueStatus;

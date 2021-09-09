@@ -67,6 +67,17 @@ router.delete(
 );
 
 router.get(
+  '/:queueId/job/:jobId/export',
+  celebrate({
+    [Segments.PARAMS]: {
+      queueId: Joi.string().required(),
+      jobId: Joi.string().required(),
+    },
+  }),
+  queueController.exportJob,
+);
+
+router.get(
   '/',
   queueController.list,
 );

@@ -1,6 +1,6 @@
 import Queue from '../../../domains/queue/entities/Queue';
 import {
-  Job, JobState, QueueJobCounts, QueueStatus,
+  Job, JobStacktrace, JobState, QueueJobCounts, QueueStatus,
 } from '../types';
 
 interface IQueueProvider {
@@ -9,6 +9,8 @@ interface IQueueProvider {
   close(): Promise<void>;
   deleteJobs(jobIds: string[]): Promise<boolean>;
   describe(): Promise<Queue>;
+  exportJob(jobId: string): Promise<string | null>;
+  formatJobStacktrace(stacktrace?: string[]): JobStacktrace[] | null;
   getJob(jobId: string): Promise<Job | undefined>;
   getJobCounts(): Promise<QueueJobCounts>;
   getJobCountsByState(state: JobState): Promise<number>;

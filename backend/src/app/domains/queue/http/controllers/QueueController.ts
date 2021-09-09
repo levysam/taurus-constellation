@@ -5,6 +5,7 @@ import { JobState } from '../../../../providers/QueueProvider/types';
 import CloneJobService from '../../../job/services/CloneJobService';
 import CreateJobService from '../../../job/services/CreateJobService';
 import DeleteJobService from '../../../job/services/DeleteJobService';
+import ExportJobService from '../../../job/services/ExportJobService';
 import ListJobService from '../../../job/services/ListJobService';
 import RetryJobService from '../../../job/services/RetryJobService';
 import ShowJobService from '../../../job/services/ShowJobService';
@@ -91,6 +92,25 @@ class QueueController {
       jobIds,
     });
     return response.json(result);
+  }
+
+  public async exportJob(request: Request, response: Response): Promise<void> {
+    const {
+      queueId,
+      jobId,
+    } = request.params;
+    const exportJob = container.resolve(ExportJobService);
+    const { filename, content } = await exportJob.execute({
+      queueId,
+      jobId,
+    });
+
+    response.setHeader('Content-disposition', `attachment; filename=${filename}`);
+    response.setHeader('Content-type', 'application/json');
+    response.write(
+      content,
+      () => response.end(),
+    );
   }
 
   public async list(request: Request, response: Response): Promise<Response> {

@@ -4,7 +4,7 @@ import moment from 'moment';
 import Queue from '../../domains/queue/entities/Queue';
 import IQueueProvider from './models/IQueueProvider';
 import {
-  Job, JobState, QueueJobCounts, QueueStatus,
+  Job, JobStacktrace, JobState, QueueJobCounts, QueueStatus,
 } from './types';
 
 class BullQueueProvider implements IQueueProvider {
@@ -65,6 +65,26 @@ class BullQueueProvider implements IQueueProvider {
     return this.queue;
   }
 
+  public async exportJob(jobId: string): Promise<string | null> {
+    const job = await this.bullQueue.getJob(jobId);
+    if (!job) {
+      return null;
+    }
+
+    return JSON.stringify(job.toJSON(), null, 2);
+  }
+
+  public formatJobStacktrace(stacktrace?: string[]): JobStacktrace[] | null {
+    if (!stacktrace) {
+      return null;
+    }
+
+    return stacktrace.map((item, index) => ({
+      order: index,
+      content: item,
+    }));
+  }
+
   public async getJob(jobId: string): Promise<Job | undefined> {
     const job = await this.bullQueue.getJob(jobId);
     if (!job) {
@@ -81,6 +101,8 @@ class BullQueueProvider implements IQueueProvider {
       timestamp: job.timestamp,
       dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD H:m:s'),
       state,
+      failedReason: job.failedReason || null,
+      stacktrace: this.formatJobStacktrace(job.stacktrace),
     } as Job;
   }
 
