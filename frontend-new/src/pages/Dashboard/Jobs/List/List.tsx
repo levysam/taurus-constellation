@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useHistory, useParams } from 'react-router-dom';
-import DataTable, { DataTableColumn } from '../../../../components/modules/DataTable/DataTable';
+import DataTable, { DataTableColumn, DataTablePagination } from '../../../../components/modules/DataTable/DataTable';
 import Default from '../../../../components/layouts/Default/Default';
 import Dropdown, { DropdownOption } from '../../../../components/elements/Dropdown/Dropdown';
 import Loader from '../../../../components/elements/Loader/Loader';
 import PageHeader from '../../../../components/modules/PageHeader/PageHeader';
 import api from '../../../../services/api';
 import { capitalize } from '../../../../utils/stringUtils';
+import { PaginationSize } from '../../../../components/modules/Pagination/Pagination';
 
 interface JobListParams {
   queueId: string;
@@ -34,6 +35,11 @@ const JobsList: React.FC = () => {
   const { queueId } = useParams<JobListParams>();
   const [queue, setQueue] = useState<Queue>({} as Queue);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [pagination, setPagination] = useState<DataTablePagination>({
+    page: 1,
+    size: 25,
+    total: 0,
+  });
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const query = useQuery();
@@ -59,16 +65,20 @@ const JobsList: React.FC = () => {
       const { data } = await api.get<JobResponse>(`/queue/${queueId}/job`, {
         params: {
           state,
-          page: 1,
-          size: 25,
+          page: pagination.page,
+          size: pagination.size,
         },
       });
       setJobs(data.jobs || []);
+      setPagination({
+        ...pagination,
+        total: data.total,
+      });
       setLoading(false);
     } catch (error) {
       setLoading(false);
     }
-  }, [queueId, state]);
+  }, [history, pagination]);
 
   /**
    * Handle select job.
@@ -143,6 +153,10 @@ const JobsList: React.FC = () => {
     loadJobs();
   }, [history]);
 
+  useEffect(() => {
+    loadJobs();
+  }, [pagination.size, pagination.page]);
+
   /**
    * Data table columns definition.
    */
@@ -151,14 +165,14 @@ const JobsList: React.FC = () => {
       dataField: 'id',
       text: 'ID',
       headerStyle: () => ({
-        width: '40%',
+        width: '25%',
       }),
     },
     {
       dataField: 'name',
       text: 'Name',
       headerStyle: () => ({
-        width: '35%',
+        width: '15%',
       }),
     },
     {
@@ -169,10 +183,24 @@ const JobsList: React.FC = () => {
       }),
     },
     {
-      dataField: 'dateTime',
+      dataField: 'createdAt',
       text: 'Created at',
       headerStyle: () => ({
-        width: '10%',
+        width: '15%',
+      }),
+    },
+    {
+      dataField: 'processedAt',
+      text: 'Processed at',
+      headerStyle: () => ({
+        width: '15%',
+      }),
+    },
+    {
+      dataField: 'finishedAt',
+      text: 'Finished at',
+      headerStyle: () => ({
+        width: '15%',
       }),
     },
   ];
@@ -216,11 +244,12 @@ const JobsList: React.FC = () => {
 
       <PageHeader
         title={queue.name}
+        subtitle={state ? `${capitalize(state)} Jobs` : 'Jobs'}
       />
 
       <DataTable
         keyField="id"
-        title={state ? `${capitalize(state)} Jobs` : 'Jobs'}
+        title="Jobs"
         tools={(
           <>
             <Dropdown
@@ -241,6 +270,20 @@ const JobsList: React.FC = () => {
         selectRow={{
           mode: 'checkbox',
           onSelect: handleSelect,
+        }}
+        enablePagination
+        pagination={pagination}
+        onChangeSize={(size: PaginationSize) => {
+          setPagination({
+            ...pagination,
+            size,
+          });
+        }}
+        onChangePage={(page: number) => {
+          setPagination({
+            ...pagination,
+            page,
+          });
         }}
       />
     </Default>

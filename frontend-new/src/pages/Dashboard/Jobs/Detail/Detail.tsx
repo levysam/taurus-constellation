@@ -26,7 +26,9 @@ interface Job {
   id: string;
   name: string;
   data: any;
-  dateTime: string;
+  createdAt: string;
+  processedAt: string;
+  finishedAt: string;
   attemptsMade: number;
   state: string;
   failedReason?: string;
@@ -131,7 +133,7 @@ const JobsDetail: React.FC = () => {
         </pre>
       </div>
     ));
-  }, [jobId]);
+  }, [job]);
 
   return (
     <Default>
@@ -193,32 +195,49 @@ const JobsDetail: React.FC = () => {
 
       <Container className="mb-2" fluid>
         <Row>
-          <Col className="mb-2" md={3}>
+          <Col className="mb-2" md={4}>
             <InfoCard
-              variant="success"
+              variant="primary"
               label="Job Id"
               value={job.id}
             />
           </Col>
-          <Col className="mb-2" md={3}>
+          <Col className="mb-2" md={4}>
             <InfoCard
-              variant="success"
+              variant="primary"
               label="State"
               value={job.state ? capitalize(job.state) : ''}
             />
           </Col>
-          <Col className="mb-2" md={3}>
+          <Col className="mb-2" md={4}>
             <InfoCard
-              variant="success"
-              label="Created at"
-              value={job.dateTime}
-            />
-          </Col>
-          <Col className="mb-2" md={3}>
-            <InfoCard
-              variant="success"
+              variant="primary"
               label="Attemtps made"
               value={job.attemptsMade}
+            />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col className="mb-2" md={4}>
+            <InfoCard
+              variant="primary"
+              label="Created at"
+              value={job.createdAt}
+            />
+          </Col>
+          <Col className="mb-2" md={4}>
+            <InfoCard
+              variant="primary"
+              label="Processed at"
+              value={job.processedAt}
+            />
+          </Col>
+          <Col className="mb-2" md={4}>
+            <InfoCard
+              variant="primary"
+              label="Finished at"
+              value={job.finishedAt}
             />
           </Col>
         </Row>
@@ -227,7 +246,7 @@ const JobsDetail: React.FC = () => {
           <Col className="mb-2" md={12}>
             <InfoCard
               label="Data"
-              variant="success"
+              variant="primary"
               value={(
                 <pre>
                   {job.data ? JSON.stringify(job.data, null, 2) : ''}

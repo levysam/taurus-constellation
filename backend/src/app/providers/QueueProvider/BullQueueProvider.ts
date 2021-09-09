@@ -1,8 +1,8 @@
 import Bull from 'bull';
 import { ulid } from 'ulid';
-import moment from 'moment';
 import Queue from '../../domains/queue/entities/Queue';
 import IQueueProvider from './models/IQueueProvider';
+import { timestampToDate } from '../../utils/dateUtils';
 import {
   Job, JobStacktrace, JobState, QueueJobCounts, QueueStatus,
 } from './types';
@@ -99,7 +99,9 @@ class BullQueueProvider implements IQueueProvider {
       attemptsMade: job.attemptsMade,
       name: job.name,
       timestamp: job.timestamp,
-      dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD H:m:s'),
+      createdAt: timestampToDate(job.timestamp),
+      processedAt: timestampToDate(job.processedOn),
+      finishedAt: timestampToDate(job.finishedOn),
       state,
       failedReason: job.failedReason || null,
       stacktrace: this.formatJobStacktrace(job.stacktrace),
@@ -135,13 +137,15 @@ class BullQueueProvider implements IQueueProvider {
       start,
       end,
     );
+
     return jobs.map((job) => ({
       id: job.id.toString(),
-      data: job.data,
       attemptsMade: job.attemptsMade,
       name: job.name,
       timestamp: job.timestamp,
-      dateTime: moment(job.timestamp || 0).format('YYYY-MM-DD H:m:s'),
+      createdAt: timestampToDate(job.timestamp),
+      processedAt: timestampToDate(job.processedOn),
+      finishedAt: timestampToDate(job.finishedOn),
       state,
     }));
   }

@@ -1,27 +1,36 @@
 .container {
+  align-items: center;
   display: flex;
 }
 
 .pagination {
   display: flex;
+  margin-bottom: 0px;
 }
 
 .page {
-  background-color: var(--dark);
-  cursor: pointer;
   list-style: none;
-  padding: 7px 15px;
 
-  &:hover {
-    background: var(--background);
+  .link {
+    background-color: var(--dark);
+    font-weight: bold;
+    padding: 7px 15px;
+
+    &:hover {
+      background: var(--background);
+    }
   }
 
   &:first-child {
-    border-radius: 5px 0px 0px 5px;
+    .link {
+      border-radius: 5px 0px 0px 5px;
+    }
   }
 
   &:last-child {
-    border-radius: 0px 5px 5px 0px;
+    .link {
+      border-radius: 0px 5px 5px 0px;
+    }
   }
 }
 
@@ -32,6 +41,8 @@
 }
 
 .active {
-  background: var(--background);
-  box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
+  .link {
+    background: var(--background);
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
+  }
 }

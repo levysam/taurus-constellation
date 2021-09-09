@@ -9,29 +9,17 @@
   &.primary {
     border-left: 4px solid var(--primary);
 
-    .label {
-      color: var(--primary);
-    }
   }
 
   &.success {
     border-left: 4px solid var(--success);
-
-    .label {
-      color: var(--success);
-    }
   }
 
   &.danger {
     border-left: 4px solid var(--danger);
-
-    .label {
-      color: var(--danger);
-    }
   }
 
   .label {
-    color: var(--primary);
     margin-bottom: 5px;
     text-transform: uppercase;
   }

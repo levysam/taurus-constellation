@@ -64,6 +64,29 @@ const MainDashboard: React.FC = () => {
   }, [history]);
 
   /**
+   * Get queue link.
+   */
+  const getQueueLink = useCallback((
+    queue: Queue,
+    state: string,
+    content: string,
+  ) => {
+    const { id } = queue;
+    const href = `/queues/${id}/jobs?state=${state}`;
+
+    return (
+      <span
+        onClick={() => { history.push(href); }}
+        onKeyDown={() => { history.push(href); }}
+        role="button"
+        tabIndex={0}
+      >
+        {content}
+      </span>
+    );
+  }, [groupDashboards]);
+
+  /**
    * Handle table row selection.
    */
   const handleSelect = useCallback((
@@ -177,42 +200,67 @@ const MainDashboard: React.FC = () => {
     {
       dataField: 'jobCounts.waiting',
       text: 'Waiting',
+      classes: styles.numberColumn,
       headerStyle: () => ({
         width: '10%',
       }),
-      classes: styles.numberColumn,
+      formatter: (cell, row) => getQueueLink(
+        row,
+        'waiting',
+        cell,
+      ),
     },
     {
       dataField: 'jobCounts.paused',
       text: 'Paused',
+      classes: styles.numberColumn,
       headerStyle: () => ({
         width: '10%',
       }),
-      classes: styles.numberColumn,
+      formatter: (cell, row) => getQueueLink(
+        row,
+        'paused',
+        cell,
+      ),
     },
     {
       dataField: 'jobCounts.active',
       text: 'Active',
+      classes: styles.numberColumn,
       headerStyle: () => ({
         width: '10%',
       }),
-      classes: styles.numberColumn,
+      formatter: (cell, row) => getQueueLink(
+        row,
+        'active',
+        cell,
+      ),
     },
     {
       dataField: 'jobCounts.delayed',
       text: 'Delayed',
+      classes: styles.numberColumn,
       headerStyle: () => ({
         width: '10%',
       }),
-      classes: styles.numberColumn,
+      formatter: (cell, row) => getQueueLink(
+        row,
+        'delayed',
+        cell,
+      ),
     },
     {
       dataField: 'jobCounts.failed',
       text: 'Failed',
+      classes: styles.numberColumn,
       headerStyle: () => ({
         width: '10%',
       }),
-      classes: styles.numberColumn,
+      formatter: (cell, row) => getQueueLink(
+        row,
+        'failed',
+        cell,
+      ),
     },
   ];
 

@@ -15,42 +15,48 @@
 
   .toggler {
     cursor: pointer;
-    flex: 1;
   }
 
-  .profile {
-    > button {
-      background-color: transparent;
-      border: none;
-      box-shadow: none;
-    }
+  .actions {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
 
-    .info {
-      align-items: center;
-      cursor: pointer;
-      display: flex;
-
-      .icon {
-        background-color: var(--primary);
-        display: flex;
-        align-items: center;
-        border: 2px solid var(--white);
-        border-radius: 50px;
-        min-height: 30px;
-        justify-content: center;
-        min-width: 30px;
+    .profile {
+      > button {
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
       }
 
-      .name {
-        display: none;
-        font-weight: 600;
-        margin-left: 8px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      .info {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
 
-        @media only screen and (min-width: 768px) {
-          display: block;
+        .icon {
+          background-color: var(--primary);
+          display: flex;
+          align-items: center;
+          border: 2px solid var(--white);
+          border-radius: 50px;
+          min-height: 30px;
+          justify-content: center;
+          min-width: 30px;
+        }
+
+        .name {
+          display: none;
+          font-weight: 600;
+          margin-left: 8px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+
+          @media only screen and (min-width: 768px) {
+            display: block;
+          }
         }
       }
     }

@@ -38,36 +38,38 @@ const Topbar: React.FC<TopbarProps> = ({
         <FontAwesomeIcon icon={faBars} />
       </a>
 
-      <Dropdown
-        className={styles.profile}
-        title={(
-          <div className={styles.info}>
-            <div className={styles.icon}>
-              <FontAwesomeIcon icon={faUser} />
+      <div className={styles.actions}>
+        <Dropdown
+          className={styles.profile}
+          title={(
+            <div className={styles.info}>
+              <div className={styles.icon}>
+                <FontAwesomeIcon icon={faUser} />
+              </div>
+              <span className={styles.name}>
+                {user ? getFirstWord(user.name) : 'User'}
+              </span>
             </div>
-            <span className={styles.name}>
-              {user ? getFirstWord(user.name) : 'User'}
-            </span>
-          </div>
         )}
-        options={[
-          {
-            label: 'My account',
-            onClick: () => { history.push('/account'); },
-          },
-          {
-            label: 'divider',
-            isDivider: true,
-          },
-          {
-            label: 'Sign out',
-            onClick: () => {
-              signOut();
-              history.push('/');
+          options={[
+            {
+              label: 'My account',
+              onClick: () => { history.push('/account'); },
             },
-          },
-        ]}
-      />
+            {
+              label: 'divider',
+              isDivider: true,
+            },
+            {
+              label: 'Sign out',
+              onClick: () => {
+                signOut();
+                history.push('/');
+              },
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 };

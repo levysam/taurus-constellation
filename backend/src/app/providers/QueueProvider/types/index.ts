@@ -18,11 +18,13 @@ export type JobState = 'waiting' | 'active' | 'delayed' | 'failed' | 'completed'
 
 export type Job = {
   id: string;
-  data: any;
+  data?: any;
   attemptsMade: number;
   name: string;
   timestamp: number;
-  dateTime: string;
+  createdAt?: string;
+  processedAt?: string;
+  finishedAt?: string;
   state: JobState;
   failedReason?: string;
   stacktrace?: JobStacktrace[];
