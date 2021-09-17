@@ -1,0 +1,40 @@
+.queue {
+  margin-bottom: 10px;
+  padding-bottom: 30px;
+
+  .header {
+    display: flex;
+    margin-left: -20px;
+    padding: 10px 20px;
+    width: calc(100% + 40px);
+
+    .title {
+      align-items: center;
+      display: flex;
+      flex: 1;
+      font-weight: bold;
+    }
+  }
+
+  .jobs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    width: 100%;
+
+    .job {
+      align-items: center;
+      display: flex;
+      flex-direction: column;;
+
+      .value {
+        font-weight: bold;
+      }
+
+      .label {
+        font-size: 0.8em;
+        text-transform: uppercase;
+      }
+    }
+  }
+}

@@ -15,6 +15,8 @@ router.post(
       name: Joi.string().required(),
       description: Joi.string().allow(null, ''),
     },
+  }, {
+    allowUnknown: true,
   }),
   groupController.create,
 );

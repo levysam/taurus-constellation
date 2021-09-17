@@ -5,7 +5,8 @@
 
   .brand {
     align-items: center;
-    background-color: var(--primary);
+    background: var(--primary);
+    background: linear-gradient(156deg, rgba(106,103,206,1) 0%, rgba(127,14,191,1) 100%);
     display: flex;
     font-weight: 600;
     height: 70px;

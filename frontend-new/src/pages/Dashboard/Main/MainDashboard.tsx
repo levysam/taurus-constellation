@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import DataTable, { DataTableColumn } from '../../../components/modules/DataTable/DataTable';
 import Default from '../../../components/layouts/Default/Default';
 import Dropdown from '../../../components/elements/Dropdown/Dropdown';
+import GroupCard from '../../../components/modules/GroupCard/GroupCard';
 import Loader from '../../../components/elements/Loader/Loader';
 import PageHeader from '../../../components/modules/PageHeader/PageHeader';
 import api from '../../../services/api';
