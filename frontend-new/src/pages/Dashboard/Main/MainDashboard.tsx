@@ -1,12 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStream, faTable } from '@fortawesome/free-solid-svg-icons';
+import Button from '../../../components/elements/Button/Button';
+import ButtonGroup from '../../../components/modules/ButtonGroup/ButtonGroup';
 import DataTable, { DataTableColumn } from '../../../components/modules/DataTable/DataTable';
 import Default from '../../../components/layouts/Default/Default';
 import Dropdown from '../../../components/elements/Dropdown/Dropdown';
 import GroupCard from '../../../components/modules/GroupCard/GroupCard';
 import Loader from '../../../components/elements/Loader/Loader';
 import PageHeader from '../../../components/modules/PageHeader/PageHeader';
+import SearchInput, { SearchInputEvent } from '../../../components/modules/SearchInput/SearchInput';
 import api from '../../../services/api';
 import styles from './styles.module.scss';
 
@@ -33,9 +38,18 @@ interface GroupDashboard {
   queues: Queue[];
 }
 
+interface GroupOption {
+  label: string;
+  value: any;
+}
+
+type DashboardMode = 'table' | 'cards';
+
 const MainDashboard: React.FC = () => {
   const history = useHistory();
+  const [groupsOptions, setGroupsOptions] = useState<GroupOption[]>([]);
   const [groupDashboards, setGroupDashboards] = useState<GroupDashboard[]>([]);
+  const [mode, setMode] = useState<DashboardMode>('table');
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -52,6 +66,12 @@ const MainDashboard: React.FC = () => {
           const { data: dashboard } = await api.get<GroupDashboard>(`/group/${group.id}/dashboard`);
           dashboards.push(dashboard);
         }),
+      );
+      setGroupsOptions(
+        dashboards.map((item) => ({
+          label: item.group.name,
+          value: item.group.id,
+        })),
       );
       setGroupDashboards(dashboards);
       setLoading(false);
@@ -84,6 +104,15 @@ const MainDashboard: React.FC = () => {
       >
         {content}
       </span>
+    );
+  }, [groupDashboards]);
+
+  /**
+   * Handle filter group.
+   */
+  const handleFilterGroup = useCallback(({ value }: SearchInputEvent) => {
+    setGroupDashboards(
+      groupDashboards.filter((item) => item.group.id === value),
     );
   }, [groupDashboards]);
 
@@ -127,34 +156,34 @@ const MainDashboard: React.FC = () => {
   /**
    * Pause queues.
    */
-  const pauseQueues = useCallback(async () => {
+  const pauseQueues = useCallback(async (ids: string[]) => {
     setLoading(true);
     try {
       await api.put('/queue/pause', {
-        ids: selected,
+        ids,
       });
       await loadDashboard();
       setLoading(false);
     } catch (error) {
       setLoading(false);
     }
-  }, [selected]);
+  }, [groupDashboards]);
 
   /**
    * Resume queues.
    */
-  const resumeQueues = useCallback(async () => {
+  const resumeQueues = useCallback(async (ids: string[]) => {
     setLoading(true);
     try {
       await api.put('/queue/resume', {
-        ids: selected,
+        ids,
       });
       await loadDashboard();
       setLoading(false);
     } catch (error) {
       setLoading(false);
     }
-  }, [selected]);
+  }, [groupDashboards]);
 
   /**
    * Table columns definition.
@@ -275,21 +304,42 @@ const MainDashboard: React.FC = () => {
       <PageHeader
         title="Dashboard"
         tools={(
-          <>
+          <div className={styles.pageHeaderTools}>
             <Dropdown
+              className="mr-1"
               title="Actions"
               options={[
                 {
                   label: 'Pause',
-                  onClick: pauseQueues,
+                  onClick: () => { pauseQueues(selected); },
                 },
                 {
                   label: 'Resume',
-                  onClick: resumeQueues,
+                  onClick: () => { resumeQueues(selected); },
                 },
               ]}
             />
-          </>
+            <SearchInput
+              className="mr-1"
+              placeholder="Filter group..."
+              options={groupsOptions}
+              handleSelect={handleFilterGroup}
+            />
+            <ButtonGroup className="mr-1">
+              <Button
+                variant="dark"
+                onClick={() => { setMode('table'); }}
+              >
+                <FontAwesomeIcon icon={faTable} />
+              </Button>
+              <Button
+                variant="dark"
+                onClick={() => { setMode('cards'); }}
+              >
+                <FontAwesomeIcon icon={faStream} />
+              </Button>
+            </ButtonGroup>
+          </div>
         )}
       />
 
@@ -301,22 +351,40 @@ const MainDashboard: React.FC = () => {
       }
 
       {
-        groupDashboards.map((item) => (
-          <DataTable
-            className={styles.dataTable}
-            key={item.group.id}
-            title={item.group.name}
-            keyField="id"
-            columns={columns}
-            data={item.queues}
-            noDataIndication="No results found"
-            selectRow={{
-              mode: 'checkbox',
-              onSelect: handleSelect,
-              onSelectAll: handleSelectAll,
-            }}
-          />
-        ))
+        mode === 'cards'
+        && (
+          groupDashboards.map((item) => (
+            <GroupCard
+              key={item.group.id}
+              group={item.group}
+              queues={item.queues}
+              onPause={(queueId: string) => { pauseQueues([queueId]); }}
+              onResume={(queueId: string) => { resumeQueues([queueId]); }}
+            />
+          ))
+        )
+      }
+
+      {
+        mode === 'table'
+        && (
+          groupDashboards.map((item) => (
+            <DataTable
+              className={styles.dataTable}
+              key={item.group.id}
+              title={item.group.name}
+              keyField="id"
+              columns={columns}
+              data={item.queues}
+              noDataIndication="No results found"
+              selectRow={{
+                mode: 'checkbox',
+                onSelect: handleSelect,
+                onSelectAll: handleSelectAll,
+              }}
+            />
+          ))
+        )
       }
     </Default>
   );

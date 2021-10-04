@@ -22,7 +22,10 @@ const Default: React.FC = ({
         <Sidebar collapsed={collapsed} />
       </div>
       <div className={styles.main}>
-        <div className={styles.topbar}>
+        <div className={classnames(styles.topbar, {
+          [styles.collapsed]: collapsed,
+        })}
+        >
           <Topbar
             collapsed={collapsed}
             toggle={toggle}
