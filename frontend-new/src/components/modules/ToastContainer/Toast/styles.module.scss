@@ -1,0 +1,31 @@
+.container {
+  border-radius: 4px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 30px 19px 16px;
+  position: relative;
+  width: 360px;
+
+  > p {
+    font-size: 0.8rem;
+    margin-bottom: 0px;
+  }
+
+  > button {
+    background-color: transparent;
+    border: none;
+    color: var(--white);
+    position: absolute;
+    right: 16px;
+    top: 16px;
+  }
+
+  &.success {
+    background-color: var(--success);
+  }
+
+  &.error {
+    background-color: var(--danger);
+  }
+}

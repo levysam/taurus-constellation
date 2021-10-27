@@ -11,7 +11,6 @@ import Dropdown from '../../../components/elements/Dropdown/Dropdown';
 import GroupCard from '../../../components/modules/GroupCard/GroupCard';
 import Loader from '../../../components/elements/Loader/Loader';
 import PageHeader from '../../../components/modules/PageHeader/PageHeader';
-import SearchInput, { SearchInputEvent } from '../../../components/modules/SearchInput/SearchInput';
 import api from '../../../services/api';
 import styles from './styles.module.scss';
 
@@ -38,16 +37,10 @@ interface GroupDashboard {
   queues: Queue[];
 }
 
-interface GroupOption {
-  label: string;
-  value: any;
-}
-
 type DashboardMode = 'table' | 'cards';
 
 const MainDashboard: React.FC = () => {
   const history = useHistory();
-  const [groupsOptions, setGroupsOptions] = useState<GroupOption[]>([]);
   const [groupDashboards, setGroupDashboards] = useState<GroupDashboard[]>([]);
   const [mode, setMode] = useState<DashboardMode>('table');
   const [selected, setSelected] = useState<string[]>([]);
@@ -66,12 +59,6 @@ const MainDashboard: React.FC = () => {
           const { data: dashboard } = await api.get<GroupDashboard>(`/group/${group.id}/dashboard`);
           dashboards.push(dashboard);
         }),
-      );
-      setGroupsOptions(
-        dashboards.map((item) => ({
-          label: item.group.name,
-          value: item.group.id,
-        })),
       );
       setGroupDashboards(dashboards);
       setLoading(false);
@@ -104,15 +91,6 @@ const MainDashboard: React.FC = () => {
       >
         {content}
       </span>
-    );
-  }, [groupDashboards]);
-
-  /**
-   * Handle filter group.
-   */
-  const handleFilterGroup = useCallback(({ value }: SearchInputEvent) => {
-    setGroupDashboards(
-      groupDashboards.filter((item) => item.group.id === value),
     );
   }, [groupDashboards]);
 
@@ -318,12 +296,6 @@ const MainDashboard: React.FC = () => {
                   onClick: () => { resumeQueues(selected); },
                 },
               ]}
-            />
-            <SearchInput
-              className="mr-1"
-              placeholder="Filter group..."
-              options={groupsOptions}
-              handleSelect={handleFilterGroup}
             />
             <ButtonGroup className="mr-1">
               <Button

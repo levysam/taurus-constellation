@@ -153,6 +153,16 @@ router.post(
   queueController.retryJobs,
 );
 
+router.post(
+  '/:id/job/retry-all',
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.string().required(),
+    },
+  }),
+  queueController.retryAllJobs,
+);
+
 router.get(
   '/:id',
   celebrate({

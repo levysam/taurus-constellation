@@ -221,55 +221,49 @@ const JobsDetail: React.FC = () => {
 
       <Container className="mb-2" fluid>
         <Row>
-          <Col className="mb-2" md={4}>
-            <InfoCard
-              variant="primary"
-              label="Job Id"
-              value={job.id}
-            />
+          <Col className="mb-3" md={4}>
+            <div className={styles.info}>
+              <strong>Id</strong>
+              <span>{job.id}</span>
+            </div>
           </Col>
-          <Col className="mb-2" md={4}>
-            <InfoCard
-              variant="primary"
-              label="State"
-              value={job.state ? capitalize(job.state) : ''}
-            />
+          <Col className="mb-3" md={4}>
+            <div className={styles.info}>
+              <strong>State</strong>
+              <span>{job.state ? capitalize(job.state) : ''}</span>
+            </div>
           </Col>
-          <Col className="mb-2" md={4}>
-            <InfoCard
-              variant="primary"
-              label="Attemtps made"
-              value={job.attemptsMade}
-            />
+          <Col className="mb-3" md={4}>
+            <div className={styles.info}>
+              <strong>Attempts made</strong>
+              <span>{job.attemptsMade}</span>
+            </div>
           </Col>
         </Row>
 
         <Row>
-          <Col className="mb-2" md={4}>
-            <InfoCard
-              variant="primary"
-              label="Created at"
-              value={job.createdAt}
-            />
+          <Col className="mb-3" md={4}>
+            <div className={styles.info}>
+              <strong>Created at</strong>
+              <span>{job.createdAt || '-'}</span>
+            </div>
           </Col>
-          <Col className="mb-2" md={4}>
-            <InfoCard
-              variant="primary"
-              label="Processed at"
-              value={job.processedAt}
-            />
+          <Col className="mb-3" md={4}>
+            <div className={styles.info}>
+              <strong>Processed at</strong>
+              <span>{job.processedAt || '-'}</span>
+            </div>
           </Col>
-          <Col className="mb-2" md={4}>
-            <InfoCard
-              variant="primary"
-              label="Finished at"
-              value={job.finishedAt}
-            />
+          <Col className="mb-3" md={4}>
+            <div className={styles.info}>
+              <strong>Finished at</strong>
+              <span>{job.finishedAt || '-'}</span>
+            </div>
           </Col>
         </Row>
 
         <Row>
-          <Col className="mb-2" md={12}>
+          <Col className="mb-3" md={12}>
             <InfoCard
               label="Data"
               variant="primary"
@@ -285,7 +279,7 @@ const JobsDetail: React.FC = () => {
         {
           ['failed', 'delayed'].includes(job.state) && (
             <Row>
-              <Col className="mb-2" md={12}>
+              <Col className="mb-3" md={12}>
                 <InfoCard
                   label="Reason for failure"
                   variant="danger"
@@ -296,7 +290,7 @@ const JobsDetail: React.FC = () => {
                   )}
                 />
               </Col>
-              <Col className="mb-2" md={12}>
+              <Col className="mb-3" md={12}>
                 <InfoCard
                   label="Stacktraces"
                   variant="danger"

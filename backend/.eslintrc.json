@@ -16,6 +16,7 @@
     "@typescript-eslint"
   ],
   "rules": {
+    "no-await-in-loop": "off",
     "no-restricted-syntax": "off",
     "class-methods-use-this": "off",
     "@typescript-eslint/camelcase": "off",

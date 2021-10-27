@@ -5,3 +5,14 @@
     border-bottom: 1px solid var(--dark);
   }
 }
+
+.info {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2em;
+
+  > strong {
+    color: var(--gray2);
+    text-transform: uppercase;
+  }
+}

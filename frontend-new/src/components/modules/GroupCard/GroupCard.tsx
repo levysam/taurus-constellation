@@ -1,11 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import Button from '../../elements/Button/Button';
-import Checkbox from '../../elements/Checkbox/Checkbox';
 import Card, { CardHeader, CardTitle } from '../../elements/Card/Card';
-import api from '../../../services/api';
 import styles from './styles.module.scss';
 
 interface Group {

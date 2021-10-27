@@ -19,6 +19,7 @@ interface IQueueProvider {
   pause(): Promise<boolean>;
   resume(): Promise<boolean>;
   retryJobs(jobIds: string[]): Promise<boolean>;
+  retryAllJobs(): Promise<boolean>;
 }
 
 export default IQueueProvider;

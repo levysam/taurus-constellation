@@ -9,6 +9,8 @@ import PageHeader from '../../../../components/modules/PageHeader/PageHeader';
 import api from '../../../../services/api';
 import { capitalize } from '../../../../utils/stringUtils';
 import { PaginationSize } from '../../../../components/modules/Pagination/Pagination';
+import ConfirmationModal from '../../../../components/modules/ConfirmationModal/ConfirmationModal';
+import { useToast } from '../../../../hooks/toast';
 
 interface JobListParams {
   queueId: string;
@@ -32,6 +34,7 @@ interface JobResponse {
 
 const JobsList: React.FC = () => {
   const history = useHistory();
+  const { addToast } = useToast();
   const { queueId, state } = useParams<JobListParams>();
   const [queue, setQueue] = useState<Queue>({} as Queue);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -42,6 +45,9 @@ const JobsList: React.FC = () => {
   });
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showRemoveModal, setShowRemoveModal] = useState<boolean>(false);
+  const [showRetryModal, setShowRetryModal] = useState<boolean>(false);
+  const [showRetryAllModal, setShowRetryAllModal] = useState<boolean>(false);
 
   const loadQueue = useCallback(async () => {
     setLoading(true);
@@ -100,6 +106,20 @@ const JobsList: React.FC = () => {
   }, [jobs]);
 
   /**
+   * Handle select all.
+   */
+  const handleSelectAll = useCallback((
+    isSelected: boolean,
+    rows: Job[],
+  ) => {
+    if (isSelected) {
+      setSelected(rows.map((row) => row.id));
+      return;
+    }
+    setSelected([]);
+  }, [jobs]);
+
+  /**
    * Retry all jobs.
    */
   const retryAll = useCallback(async () => {
@@ -107,8 +127,19 @@ const JobsList: React.FC = () => {
     try {
       await api.post(`/queue/${queueId}/job/retry-all`);
       await loadJobs();
+      addToast({
+        type: 'success',
+        title: 'Jobs sent to queue again.',
+      });
+      setShowRetryAllModal(false);
       setLoading(false);
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occured',
+        description: 'We could not retry the jobs.',
+      });
+      setShowRetryAllModal(false);
       setLoading(false);
     }
   }, [jobs]);
@@ -117,22 +148,54 @@ const JobsList: React.FC = () => {
    * Retry selected jobs.
    */
   const retrySelected = useCallback(async () => {
+    if (!selected.length) {
+      addToast({
+        type: 'error',
+        title: 'No jobs selected',
+        description: 'Please, select at least one job to retry.',
+      });
+      setShowRetryModal(false);
+      return;
+    }
+
     setLoading(true);
     try {
       await api.post(`/queue/${queueId}/job/retry`, {
-        jobIds: [],
+        jobIds: selected,
       });
       await loadJobs();
+      setSelected([]);
+      setShowRetryModal(false);
+      addToast({
+        type: 'success',
+        title: 'Jobs sent to queue again.',
+      });
       setLoading(false);
     } catch (error) {
+      setShowRetryModal(false);
+      addToast({
+        type: 'error',
+        title: 'An error has occured',
+        description: 'We could not retry the jobs.',
+      });
       setLoading(false);
     }
-  }, [jobs]);
+  }, [selected]);
 
   /**
    * Remove selected jobs.
    */
   const removeSelected = useCallback(async () => {
+    if (!selected.length) {
+      addToast({
+        type: 'error',
+        title: 'No jobs selected',
+        description: 'Please, select at least one job to remove.',
+      });
+      setShowRemoveModal(false);
+      return;
+    }
+
     setLoading(true);
     try {
       await api.delete(`/queue/${queueId}/job`, {
@@ -140,45 +203,65 @@ const JobsList: React.FC = () => {
           jobIds: selected,
         },
       });
+      await loadJobs();
+      setSelected([]);
+      setShowRemoveModal(false);
+      addToast({
+        type: 'success',
+        title: 'Jobs removed successfully.',
+      });
       setLoading(false);
     } catch (error) {
+      setShowRemoveModal(false);
+      addToast({
+        type: 'error',
+        title: 'An error occurred',
+        description: 'We could not remove the jobs.',
+      });
       setLoading(false);
     }
-  }, [jobs]);
+  }, [selected]);
 
   /**
    * Get dropdown options.
    */
   const getDropdownOptions = useCallback((): DropdownOption[] => {
-    const options: DropdownOption[] = [
-      {
-        label: 'Retry selected',
-        onClick: () => { retrySelected(); },
-      },
-      {
-        label: 'Retry all',
-        onClick: () => { retryAll(); },
-      },
-      {
-        label: 'remove-section',
-        isDivider: true,
-      },
-      {
-        label: 'Remove selected',
-        onClick: () => { removeSelected(); },
-      },
-    ];
+    let options: DropdownOption[] = [];
 
     if (state === 'waiting') {
-      options.unshift({
-        label: 'Create',
-        onClick: () => {
-          history.push(`/dashboard/queues/${queueId}/${state}/jobs/form`);
+      options = options.concat([
+        {
+          label: 'Create',
+          onClick: () => {
+            history.push(`/dashboard/queues/${queueId}/${state}/jobs/form`);
+          },
+        }, {
+          label: 'section-a',
+          isDivider: true,
         },
-      }, {
-        label: 'retry-section',
-        isDivider: true,
-      });
+      ]);
+    }
+
+    options.push({
+      label: 'Remove selected',
+      onClick: () => { setShowRemoveModal(true); },
+    });
+
+    if (state === 'failed') {
+      options = options.concat([
+        {
+          label: 'section-b',
+          isDivider: true,
+        },
+        {
+          label: 'Retry selected',
+          onClick: () => { setShowRetryModal(true); },
+        },
+        {
+          label: 'Retry all',
+          onClick: () => { setShowRetryAllModal(true); },
+        },
+      ]);
     }
 
     return options;
@@ -231,6 +314,9 @@ const JobsList: React.FC = () => {
       headerStyle: () => ({
         width: '15%',
       }),
+      formatter: (cell) => (
+        cell || '-'
+      ),
     },
     {
       dataField: 'finishedAt',
@@ -238,6 +324,9 @@ const JobsList: React.FC = () => {
       headerStyle: () => ({
         width: '15%',
       }),
+      formatter: (cell) => (
+        cell || '-'
+      ),
     },
   ];
 
@@ -247,6 +336,33 @@ const JobsList: React.FC = () => {
         loading
         && <Loader />
       }
+
+      <ConfirmationModal
+        show={showRemoveModal}
+        title="Remove selected jobs"
+        onConfirm={removeSelected}
+        onCancel={() => { setShowRemoveModal(false); }}
+      >
+        Do you really want to remove these jobs?
+      </ConfirmationModal>
+
+      <ConfirmationModal
+        show={showRetryModal}
+        title="Retry selected jobs"
+        onConfirm={retrySelected}
+        onCancel={() => { setShowRetryModal(false); }}
+      >
+        Do you really want to retry these jobs?
+      </ConfirmationModal>
+
+      <ConfirmationModal
+        show={showRetryAllModal}
+        title="Retry all jobs"
+        onConfirm={retryAll}
+        onCancel={() => { setShowRetryAllModal(false); }}
+      >
+        Do you really want to retry all jobs?
+      </ConfirmationModal>
 
       <Breadcrumb
         items={[
@@ -284,6 +400,7 @@ const JobsList: React.FC = () => {
         selectRow={{
           mode: 'checkbox',
           onSelect: handleSelect,
+          onSelectAll: handleSelectAll,
         }}
         enablePagination
         pagination={pagination}

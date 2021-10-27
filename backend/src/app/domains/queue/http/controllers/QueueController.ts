@@ -7,6 +7,7 @@ import CreateJobService from '../../../job/services/CreateJobService';
 import DeleteJobService from '../../../job/services/DeleteJobService';
 import ExportJobService from '../../../job/services/ExportJobService';
 import ListJobService from '../../../job/services/ListJobService';
+import RetryAllJobService from '../../../job/services/RetryAllJobService';
 import RetryJobService from '../../../job/services/RetryJobService';
 import ShowJobService from '../../../job/services/ShowJobService';
 import CreateQueueService from '../../services/CreateQueueService';
@@ -193,6 +194,17 @@ class QueueController {
     const result = await retryJob.execute({
       queueId,
       jobIds,
+    });
+    return response.json(result);
+  }
+
+  public async retryAllJobs(request: Request, response: Response): Promise<Response> {
+    const {
+      id: queueId,
+    } = request.params;
+    const retryAllJob = container.resolve(RetryAllJobService);
+    const result = await retryAllJob.execute({
+      queueId,
     });
     return response.json(result);
   }

@@ -169,6 +169,33 @@ class BullQueueProvider implements IQueueProvider {
     }));
     return true;
   }
+
+  public async retryAllJobs(): Promise<boolean> {
+    let start = 0;
+    let end = 99;
+    let jobs = await this.bullQueue.getJobs(
+      ['failed'],
+      start,
+      end,
+    );
+
+    while (jobs.length) {
+      await Promise.all(jobs.map(async (job) => {
+        await job.retry();
+      }));
+
+      jobs = await this.bullQueue.getJobs(
+        ['failed'],
+        start,
+        end,
+      );
+
+      start += 100;
+      end += 100;
+    }
+
+    return true;
+  }
 }
 
 export default BullQueueProvider;
