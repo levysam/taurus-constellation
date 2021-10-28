@@ -54,14 +54,7 @@ const MainDashboard: React.FC = () => {
   const loadDashboard = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
-      const { data: groups } = await api.get<Group[]>('/group');
-      const dashboards: GroupDashboard[] = [];
-      await Promise.all(
-        groups.map(async (group) => {
-          const { data: dashboard } = await api.get<GroupDashboard>(`/group/${group.id}/dashboard`);
-          dashboards.push(dashboard);
-        }),
-      );
+      const { data: dashboards } = await api.get<GroupDashboard[]>('/group/dashboard');
       setGroupDashboards(dashboards);
       setLoading(false);
     } catch (error) {

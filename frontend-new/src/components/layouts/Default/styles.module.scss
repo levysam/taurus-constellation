@@ -8,14 +8,16 @@
 
   .sidebar {
     background-color: blue;
+    box-shadow: 0 19px 35px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.22);
     height: 100%;
     position: fixed;
     width: 200px;
     z-index: 99999;
 
     @media only screen and (min-width: 768px) {
-      position: relative;
+      box-shadow: none;
       min-width: 220px;
+      position: relative;
     }
 
     &.collapsed {

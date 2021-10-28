@@ -27,13 +27,13 @@ router.get(
 );
 
 router.get(
-  '/:id',
-  groupController.show,
+  '/dashboard',
+  groupController.showDashboard,
 );
 
 router.get(
-  '/:id/dashboard',
-  groupController.showDashboard,
+  '/:id',
+  groupController.show,
 );
 
 router.put(

@@ -3,11 +3,20 @@ import IQueueProvider from '../../../providers/QueueProvider/models/IQueueProvid
 import Queue from '../../queue/entities/Queue';
 import IQueueRepository from '../../queue/repositories/models/IQueueRepository';
 import BullQueueProvider from '../../../providers/QueueProvider/BullQueueProvider';
-import CustomError from '../../../errors/CustomError';
 import Group from '../entities/Group';
 import IGroupRepository from '../repositories/models/IGroupRepository';
 
-interface IDashboard {
+interface IUser {
+  id: string;
+  role: string;
+  groupIds: string[];
+}
+
+interface IRequest {
+  user: IUser;
+}
+
+interface IDashboardItem {
   group: Group,
   queues: Queue[],
 }
@@ -22,28 +31,38 @@ class ShowGroupDashboardService {
     private queueRepository: IQueueRepository,
   ) {}
 
-  public async execute(groupId: string): Promise<IDashboard> {
-    const group = await this.groupRepository.find(groupId);
+  public async execute({
+    user,
+  }: IRequest): Promise<IDashboardItem[]> {
+    const groups = await this.getGroups(user);
+    const dashboard: IDashboardItem[] = [];
 
-    if (!group) {
-      throw new CustomError('Group not found.', 404);
+    for (const group of groups) {
+      const queues = await this.queueRepository.findByGroup(group.id);
+      const describedQueues = await Promise.all(
+        queues.map(async (queue) => {
+          const queueProvider = this.newBullQueueProvider(queue);
+          const describedQueue = await queueProvider.describe();
+          await queueProvider.close();
+
+          return describedQueue;
+        }),
+      );
+
+      dashboard.push({
+        group,
+        queues: describedQueues,
+      });
     }
 
-    const queues = await this.queueRepository.findByGroup(groupId);
-    const describedQueues = await Promise.all(
-      queues.map(async (queue) => {
-        const queueProvider = this.newBullQueueProvider(queue);
-        const describedQueue = await queueProvider.describe();
-        await queueProvider.close();
+    return dashboard;
+  }
 
-        return describedQueue;
-      }),
-    );
-
-    return {
-      group,
-      queues: describedQueues,
-    };
+  public async getGroups(user: IUser): Promise<Group[]> {
+    if (user.role === 'administrator') {
+      return this.groupRepository.findAll();
+    }
+    return this.groupRepository.findByIds(user.groupIds);
   }
 
   public newBullQueueProvider(queue: Queue): IQueueProvider {

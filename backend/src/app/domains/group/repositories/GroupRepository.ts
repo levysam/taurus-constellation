@@ -36,13 +36,19 @@ class GroupRepository implements IGroupRepository {
   }
 
   public async findAll(): Promise<Group[]> {
-    const groups = await this.ormRepository.find();
-    return groups;
+    return this.ormRepository.find({
+      order: {
+        createdAt: 'ASC',
+      },
+    });
   }
 
   public async findByIds(ids: string[]): Promise<Group[]> {
-    const groups = await this.ormRepository.findByIds(ids);
-    return groups;
+    return this.ormRepository.findByIds(ids, {
+      order: {
+        createdAt: 'ASC',
+      },
+    });
   }
 
   public async findByName(name: string): Promise<Group | undefined> {

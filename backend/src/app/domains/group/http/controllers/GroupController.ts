@@ -31,12 +31,9 @@ class GroupController {
     return response.json(result);
   }
 
-  public async list(request: Request, response: Response): Promise<Response> {
-    const { user } = request;
+  public async list(_: Request, response: Response): Promise<Response> {
     const listGroup = container.resolve(ListGroupService);
-    const groups = await listGroup.execute({
-      user,
-    });
+    const groups = await listGroup.execute();
     return response.json(groups);
   }
 
@@ -51,10 +48,12 @@ class GroupController {
 
   public async showDashboard(request: Request, response: Response): Promise<Response> {
     const {
-      id,
-    } = request.params;
+      user,
+    } = request;
     const showGroupDashboard = container.resolve(ShowGroupDashboardService);
-    const groupDashboard = await showGroupDashboard.execute(String(id));
+    const groupDashboard = await showGroupDashboard.execute({
+      user,
+    });
     return response.json(groupDashboard);
   }
 

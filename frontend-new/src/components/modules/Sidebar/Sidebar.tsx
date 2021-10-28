@@ -40,7 +40,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div
         className={styles.item}
         onClick={() => { openPage('/dashboard'); }}
-        onKeyDown={() => { openPage('/dashboard'); }}
         role="button"
         tabIndex={0}
       >
