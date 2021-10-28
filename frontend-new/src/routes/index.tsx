@@ -24,15 +24,15 @@ const Routes: React.FC = () => (
     <Route path="/dashboard/queues/:queueId/:state/jobs" exact component={JobsList} isPrivate />
     <Route path="/dashboard/queues/:queueId/:state/jobs/form" exact component={JobsForm} isPrivate />
     <Route path="/dashboard/queues/:queueId/:state/jobs/:jobId" exact component={JobsDetail} isPrivate />
-    <Route path="/groups" exact component={GroupsList} isPrivate />
-    <Route path="/groups/form" exact component={GroupsForm} isPrivate />
-    <Route path="/groups/:id" exact component={GroupsForm} isPrivate />
-    <Route path="/queues" exact component={QueuesList} isPrivate />
-    <Route path="/queues/form" exact component={QueuesForm} isPrivate />
-    <Route path="/queues/:id" exact component={QueuesForm} isPrivate />
-    <Route path="/users" exact component={UsersList} isPrivate />
-    <Route path="/users/form" exact component={UsersForm} isPrivate />
-    <Route path="/users/:id" exact component={UsersForm} isPrivate />
+    <Route path="/groups" exact component={GroupsList} isPrivate isAdminOnly />
+    <Route path="/groups/form" exact component={GroupsForm} isPrivate isAdminOnly />
+    <Route path="/groups/:id" exact component={GroupsForm} isPrivate isAdminOnly />
+    <Route path="/queues" exact component={QueuesList} isPrivate isAdminOnly />
+    <Route path="/queues/form" exact component={QueuesForm} isPrivate isAdminOnly />
+    <Route path="/queues/:id" exact component={QueuesForm} isPrivate isAdminOnly />
+    <Route path="/users" exact component={UsersList} isPrivate isAdminOnly />
+    <Route path="/users/form" exact component={UsersForm} isPrivate isAdminOnly />
+    <Route path="/users/:id" exact component={UsersForm} isPrivate isAdminOnly />
     <Route path="/account" exact component={Account} isPrivate />
   </Switch>
 );

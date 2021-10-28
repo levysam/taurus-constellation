@@ -8,6 +8,7 @@ import {
   faStream,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../../../hooks/auth';
 import styles from './styles.module.scss';
 
 interface SidebarProps {
@@ -18,6 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   collapsed,
 }) => {
   const history = useHistory();
+  const { user } = useAuth();
 
   /**
    * Open page.
@@ -50,50 +52,65 @@ const Sidebar: React.FC<SidebarProps> = ({
         </span>
       </div>
 
-      <div
-        className={styles.item}
-        onClick={() => { openPage('/groups'); }}
-        onKeyDown={() => { openPage('/groups'); }}
-        role="button"
-        tabIndex={0}
-      >
-        <span className={styles.icon}>
-          <FontAwesomeIcon icon={faObjectGroup} />
-        </span>
-        <span className={styles.text}>
-          Groups
-        </span>
-      </div>
+      {
+        user.role === 'administrator'
+        && (
+          <div
+            className={styles.item}
+            onClick={() => { openPage('/groups'); }}
+            onKeyDown={() => { openPage('/groups'); }}
+            role="button"
+            tabIndex={0}
+          >
+            <span className={styles.icon}>
+              <FontAwesomeIcon icon={faObjectGroup} />
+            </span>
+            <span className={styles.text}>
+              Groups
+            </span>
+          </div>
+        )
+      }
 
-      <div
-        className={styles.item}
-        onClick={() => { openPage('/queues'); }}
-        onKeyDown={() => { openPage('/queues'); }}
-        role="button"
-        tabIndex={0}
-      >
-        <span className={styles.icon}>
-          <FontAwesomeIcon icon={faStream} />
-        </span>
-        <span className={styles.text}>
-          Queues
-        </span>
-      </div>
+      {
+        user.role === 'administrator'
+        && (
+          <div
+            className={styles.item}
+            onClick={() => { openPage('/queues'); }}
+            onKeyDown={() => { openPage('/queues'); }}
+            role="button"
+            tabIndex={0}
+          >
+            <span className={styles.icon}>
+              <FontAwesomeIcon icon={faStream} />
+            </span>
+            <span className={styles.text}>
+              Queues
+            </span>
+          </div>
+        )
+      }
 
-      <div
-        className={styles.item}
-        onClick={() => { openPage('/users'); }}
-        onKeyDown={() => { openPage('/users'); }}
-        role="button"
-        tabIndex={0}
-      >
-        <span className={styles.icon}>
-          <FontAwesomeIcon icon={faUser} />
-        </span>
-        <span className={styles.text}>
-          Users
-        </span>
-      </div>
+      {
+        user.role === 'administrator'
+        && (
+          <div
+            className={styles.item}
+            onClick={() => { openPage('/users'); }}
+            onKeyDown={() => { openPage('/users'); }}
+            role="button"
+            tabIndex={0}
+          >
+            <span className={styles.icon}>
+              <FontAwesomeIcon icon={faUser} />
+            </span>
+            <span className={styles.text}>
+              Users
+            </span>
+          </div>
+        )
+      }
     </div>
   );
 };

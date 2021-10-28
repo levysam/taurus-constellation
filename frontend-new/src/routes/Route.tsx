@@ -8,11 +8,13 @@ import { useAuth } from '../hooks/auth';
 
 interface RouteProps extends ReactDOMRouteProps {
   isPrivate?: boolean;
+  isAdminOnly?: boolean;
   component: React.ComponentType;
 }
 
 const Route: React.FC<RouteProps> = ({
   isPrivate,
+  isAdminOnly,
   component: Component,
   ...props
 }) => {
@@ -22,10 +24,13 @@ const Route: React.FC<RouteProps> = ({
     if (!isPrivate) {
       return true;
     }
-    if (isPrivate && user) {
-      return true;
+    if (isPrivate && !user) {
+      return false;
     }
-    return false;
+    if (isAdminOnly && user.role !== 'administrator') {
+      return false;
+    }
+    return true;
   }, [isPrivate, user]);
 
   return (

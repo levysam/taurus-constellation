@@ -16,6 +16,12 @@ interface IResponse {
   token: string;
 }
 
+interface ITokenSubject {
+  id: string;
+  role: string;
+  groupIds: string[];
+}
+
 @injectable()
 class AuthenticateUserService {
   constructor(
@@ -50,8 +56,14 @@ class AuthenticateUserService {
       expiresIn,
     } = authConfig.jwt;
 
+    const subject = {
+      id: user.id,
+      role: user.role,
+      groupIds: user.groupIds,
+    } as ITokenSubject;
+
     const token = sign({}, secret, {
-      subject: user.id,
+      subject: JSON.stringify(subject),
       expiresIn,
     });
 
