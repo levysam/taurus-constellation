@@ -18,6 +18,7 @@ import Select from '../../../components/elements/Select/Select';
 import api from '../../../services/api';
 import extractValidationErrors, { ValidationErrors } from '../../../utils/extractValidationErrors';
 import formatSelectOptions from '../../../utils/formatSelectOptions';
+import { useToast } from '../../../hooks/toast';
 
 interface QueuesFormParams {
   id?: string;
@@ -45,6 +46,7 @@ interface Queue {
 
 const QueuesForm: React.FC = () => {
   const history = useHistory();
+  const { addToast } = useToast();
   const { id } = useParams<QueuesFormParams>();
   const [groups, setGroups] = useState<SelectOption[]>([]);
   const [queue, setQueue] = useState<Queue>({
@@ -94,6 +96,10 @@ const QueuesForm: React.FC = () => {
    */
   const createQueue = useCallback(async (): Promise<void> => {
     await api.post('/queue', queue);
+    addToast({
+      type: 'success',
+      title: 'Queue created successfully',
+    });
     history.goBack();
   }, [history, queue]);
 
@@ -102,6 +108,10 @@ const QueuesForm: React.FC = () => {
    */
   const updateQueue = useCallback(async (): Promise<void> => {
     await api.put(`/queue/${id}`, queue);
+    addToast({
+      type: 'success',
+      title: 'Queue updated successfully',
+    });
     history.goBack();
   }, [id, queue]);
 
@@ -112,8 +122,17 @@ const QueuesForm: React.FC = () => {
     setLoading(true);
     try {
       await api.delete(`/queue/${id}`);
+      addToast({
+        type: 'success',
+        title: 'Queue removed successfully',
+      });
       history.goBack();
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not remove the queue.',
+      });
       setLoading(false);
     }
   }, [id]);
@@ -144,6 +163,11 @@ const QueuesForm: React.FC = () => {
 
       await createQueue();
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not create/update the queue.',
+      });
       if (error instanceof Yup.ValidationError) {
         setErrors(
           extractValidationErrors(error),

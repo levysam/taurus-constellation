@@ -18,6 +18,7 @@ import Select from '../../../components/elements/Select/Select';
 import api from '../../../services/api';
 import extractValidationErrors, { ValidationErrors } from '../../../utils/extractValidationErrors';
 import formatSelectOptions from '../../../utils/formatSelectOptions';
+import { useToast } from '../../../hooks/toast';
 
 interface UsersFormParams {
   id?: string;
@@ -45,6 +46,7 @@ interface User {
 
 const UsersForm: React.FC = () => {
   const history = useHistory();
+  const { addToast } = useToast();
   const { id } = useParams<UsersFormParams>();
   const [groups, setGroups] = useState<SelectOption[]>([]);
   const [user, setUser] = useState<User>({
@@ -110,6 +112,10 @@ const UsersForm: React.FC = () => {
       abortEarly: false,
     });
     await api.post('/user', user);
+    addToast({
+      type: 'success',
+      title: 'User created successfully',
+    });
     history.goBack();
   }, [history, user]);
 
@@ -129,6 +135,10 @@ const UsersForm: React.FC = () => {
       abortEarly: false,
     });
     await api.put(`/user/${id}`, user);
+    addToast({
+      type: 'success',
+      title: 'User updated successfully',
+    });
     history.goBack();
   }, [id, user]);
 
@@ -140,7 +150,16 @@ const UsersForm: React.FC = () => {
     try {
       await api.delete(`/user/${id}`);
       history.goBack();
+      addToast({
+        type: 'success',
+        title: 'User removed successfully',
+      });
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not remove the user.',
+      });
       setLoading(false);
     }
   }, [id]);
@@ -159,6 +178,11 @@ const UsersForm: React.FC = () => {
       await createUser();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
+        addToast({
+          type: 'error',
+          title: 'An error has occurred',
+          description: 'We could not create/update the user.',
+        });
         setErrors(
           extractValidationErrors(error),
         );
@@ -241,11 +265,15 @@ const UsersForm: React.FC = () => {
                   autoComplete="off"
                   hasError={!!errors.email}
                   onInput={({ currentTarget }) => {
+                    if (id) {
+                      return;
+                    }
                     setUser({
                       ...user,
                       email: currentTarget.value,
                     });
                   }}
+                  disabled={!!id}
                 />
               </FormGroup>
             </Col>

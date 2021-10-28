@@ -8,12 +8,15 @@ import {
 import * as Yup from 'yup';
 import Button from '../../../components/elements/Button/Button';
 import Card, { CardFooter, CardHeader, CardTitle } from '../../../components/elements/Card/Card';
+import ConfirmationModal from '../../../components/modules/ConfirmationModal/ConfirmationModal';
 import Default from '../../../components/layouts/Default/Default';
+import Dropdown from '../../../components/elements/Dropdown/Dropdown';
 import FormGroup from '../../../components/modules/FormGroup/FormGroup';
 import Input from '../../../components/elements/Input/Input';
 import Loader from '../../../components/elements/Loader/Loader';
 import api from '../../../services/api';
 import extractValidationErrors, { ValidationErrors } from '../../../utils/extractValidationErrors';
+import { useToast } from '../../../hooks/toast';
 
 interface GroupsFormParams {
   id?: string;
@@ -32,6 +35,7 @@ interface Group {
 
 const GroupsForm: React.FC = () => {
   const history = useHistory();
+  const { addToast } = useToast();
   const { id } = useParams<GroupsFormParams>();
   const [group, setGroup] = useState<Group>({
     name: '',
@@ -40,6 +44,7 @@ const GroupsForm: React.FC = () => {
   } as Group);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [showRemoveModal, setShowRemoveModal] = useState<boolean>(false);
 
   useEffect(() => {
     const loadGroup = async (): Promise<void> => {
@@ -63,6 +68,10 @@ const GroupsForm: React.FC = () => {
    */
   const createGroup = useCallback(async (): Promise<void> => {
     await api.post('/group', group);
+    addToast({
+      type: 'success',
+      title: 'Group created successfully',
+    });
     history.goBack();
   }, [history, group]);
 
@@ -71,8 +80,45 @@ const GroupsForm: React.FC = () => {
    */
   const updateGroup = useCallback(async (): Promise<void> => {
     await api.put(`/group/${id}`, group);
+    addToast({
+      type: 'success',
+      title: 'Group updated successfully',
+    });
     history.goBack();
   }, [id, group]);
+
+  /**
+   * Delete group.
+   */
+  const deleteGroup = useCallback(async (): Promise<void> => {
+    if (group.queues.length) {
+      addToast({
+        type: 'error',
+        title: 'Group cannot be removed',
+        description: 'This group has queues.',
+      });
+      setShowRemoveModal(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await api.delete(`/group/${id}`);
+      addToast({
+        type: 'success',
+        title: 'Group removed successfully',
+      });
+      history.goBack();
+    } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not remove the group.',
+      });
+      setShowRemoveModal(false);
+      setLoading(false);
+    }
+  }, [group]);
 
   /**
    * Handle form submit.
@@ -97,6 +143,11 @@ const GroupsForm: React.FC = () => {
 
       await createGroup();
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not create/update the group.',
+      });
       if (error instanceof Yup.ValidationError) {
         setErrors(
           extractValidationErrors(error),
@@ -113,11 +164,34 @@ const GroupsForm: React.FC = () => {
         && <Loader />
       }
 
+      <ConfirmationModal
+        title="Delete queue"
+        show={showRemoveModal}
+        onConfirm={deleteGroup}
+        onCancel={() => { setShowRemoveModal(false); }}
+      >
+        Do you want to delete this queue?
+      </ConfirmationModal>
+
       <Card>
         <CardHeader>
           <CardTitle>
             {id ? 'Edit Group' : 'Create Group'}
           </CardTitle>
+          {
+            id
+            && (
+              <Dropdown
+                title="Actions"
+                options={[
+                  {
+                    label: 'Delete',
+                    onClick: () => { setShowRemoveModal(true); },
+                  },
+                ]}
+              />
+            )
+          }
         </CardHeader>
 
         <Container fluid>
