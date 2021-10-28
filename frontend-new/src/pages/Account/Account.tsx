@@ -13,6 +13,7 @@ import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 import extractValidationErrors, { ValidationErrors } from '../../utils/extractValidationErrors';
 import formatSelectOptions from '../../utils/formatSelectOptions';
+import { useToast } from '../../hooks/toast';
 
 interface Group {
   id: string;
@@ -34,6 +35,7 @@ interface SelectOption {
 
 const Account: React.FC = () => {
   const history = useHistory();
+  const { addToast } = useToast();
   const { updateUser, user } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const [groups, setGroups] = useState<SelectOption[]>([]);
@@ -96,8 +98,17 @@ const Account: React.FC = () => {
       });
       const { data } = await api.put(`/user/${user.id}`, userData);
       updateUser(data);
+      addToast({
+        type: 'success',
+        title: 'Account updated successfully',
+      });
       history.push('/dashboard');
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not update your account',
+      });
       if (error instanceof Yup.ValidationError) {
         setErrors(
           extractValidationErrors(error),

@@ -54,6 +54,9 @@ class QueueRepository implements IQueueRepository {
       where: {
         groupId,
       },
+      order: {
+        id: 'ASC',
+      },
     });
     return queues;
   }

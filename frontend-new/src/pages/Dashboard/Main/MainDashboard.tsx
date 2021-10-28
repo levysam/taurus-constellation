@@ -12,6 +12,7 @@ import GroupCard from '../../../components/modules/GroupCard/GroupCard';
 import Loader from '../../../components/elements/Loader/Loader';
 import PageHeader from '../../../components/modules/PageHeader/PageHeader';
 import api from '../../../services/api';
+import { useToast } from '../../../hooks/toast';
 import styles from './styles.module.scss';
 
 interface Group {
@@ -41,6 +42,7 @@ type DashboardMode = 'table' | 'cards';
 
 const MainDashboard: React.FC = () => {
   const history = useHistory();
+  const { addToast } = useToast();
   const [groupDashboards, setGroupDashboards] = useState<GroupDashboard[]>([]);
   const [mode, setMode] = useState<DashboardMode>('table');
   const [selected, setSelected] = useState<string[]>([]);
@@ -135,14 +137,32 @@ const MainDashboard: React.FC = () => {
    * Pause queues.
    */
   const pauseQueues = useCallback(async (ids: string[]) => {
+    if (!ids.length) {
+      addToast({
+        type: 'error',
+        title: 'No queues selected',
+        description: 'Select the queues to be paused.',
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       await api.put('/queue/pause', {
         ids,
       });
       await loadDashboard();
+      addToast({
+        type: 'success',
+        title: 'Queues paused',
+      });
       setLoading(false);
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not pause the selected queues.',
+      });
       setLoading(false);
     }
   }, [groupDashboards]);
@@ -151,14 +171,32 @@ const MainDashboard: React.FC = () => {
    * Resume queues.
    */
   const resumeQueues = useCallback(async (ids: string[]) => {
+    if (!ids.length) {
+      addToast({
+        type: 'error',
+        title: 'No queues selected',
+        description: 'Select the queues to be resumed.',
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       await api.put('/queue/resume', {
         ids,
       });
       await loadDashboard();
+      addToast({
+        type: 'success',
+        title: 'Queues resumed',
+      });
       setLoading(false);
     } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'An error has occurred',
+        description: 'We could not resume the selected queues.',
+      });
       setLoading(false);
     }
   }, [groupDashboards]);

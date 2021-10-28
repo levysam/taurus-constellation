@@ -35,8 +35,11 @@
 }
 
 .break {
-  background-color: var(--dark);
   list-style: none;
+}
+
+.breakLink {
+  background-color: var(--dark);
   padding: 7px 15px;
 }
 

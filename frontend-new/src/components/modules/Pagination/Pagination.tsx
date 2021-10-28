@@ -47,6 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
         pageLinkClassName={styles.link}
         activeClassName={styles.active}
         breakClassName={styles.break}
+        breakLinkClassName={styles.breakLink}
         previousClassName={styles.page}
         previousLinkClassName={styles.link}
         nextClassName={styles.page}
