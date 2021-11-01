@@ -109,16 +109,8 @@ class BullQueueProvider implements IQueueProvider {
   }
 
   public async getJobCounts(): Promise<QueueJobCounts> {
-    const jobCounts = await this.bullQueue.getJobCounts();
-    const isPaused = await this.bullQueue.isPaused();
-    return {
-      waiting: isPaused ? 0 : jobCounts.waiting,
-      paused: isPaused ? jobCounts.waiting : 0,
-      active: jobCounts.active,
-      delayed: jobCounts.delayed,
-      failed: jobCounts.failed,
-      completed: jobCounts.completed,
-    };
+    const jobCounts = await this.bullQueue.getJobCounts() as QueueJobCounts;
+    return jobCounts;
   }
 
   public async getJobCountsByState(state: JobState): Promise<number> {

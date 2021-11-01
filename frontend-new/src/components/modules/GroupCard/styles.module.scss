@@ -6,7 +6,6 @@
   }
 
   .queue {
-    margin-bottom: 10px;
     padding-bottom: 30px;
 
     .header {
@@ -68,6 +67,11 @@
           }
         }
       }
+    }
+
+    .divider {
+      color: var(--gray2);
+      margin-top: 50px;
     }
   }
 }

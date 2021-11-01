@@ -65,7 +65,7 @@ const GroupCard: React.FC<GroupCardProps> = ({
       </CardHeader>
 
       {
-      queues.map((queue) => (
+      queues.map((queue, index) => (
         <div key={queue.id} className={styles.queue}>
           <div className={styles.header}>
             <div className={styles.title}>
@@ -149,6 +149,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
               </span>
             </div>
           </div>
+          {
+            (queues.length > 1 && index !== queues.length - 1)
+            && (
+              <hr className={styles.divider} />
+            )
+          }
         </div>
       ))
     }
