@@ -6,6 +6,12 @@
   right: 0;
   top: 0;
 
+  .waves {
+    bottom: 0px;
+    position: fixed;
+    width: 100%;
+  }
+
   .main {
     align-items: center;
     display: flex;
@@ -15,5 +21,6 @@
     overflow: auto;
     padding: 20px;
     width: 100vw;
+    z-index: 99;
   }
 }

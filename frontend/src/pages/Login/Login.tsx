@@ -82,7 +82,6 @@ const Login: React.FC = () => {
                   className="mb-1"
                   label="Email"
                   error={errors.email}
-                  required
                 >
                   <Input
                     type="email"
@@ -100,7 +99,6 @@ const Login: React.FC = () => {
                 <FormGroup
                   label="Password"
                   error={errors.password}
-                  required
                 >
                   <Input
                     type="password"

@@ -3,6 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Col, Container, Row } from 'react-bootstrap';
 import download from 'downloadjs';
 import Breadcrumb from '../../../../components/modules/Breadcrumb/Breadcrumb';
+import Card from '../../../../components/elements/Card/Card';
 import ConfirmationModal from '../../../../components/modules/ConfirmationModal/ConfirmationModal';
 import Default from '../../../../components/layouts/Default/Default';
 import Dropdown from '../../../../components/elements/Dropdown/Dropdown';
@@ -219,88 +220,90 @@ const JobsDetail: React.FC = () => {
         )}
       />
 
-      <Container className="mb-2" fluid>
-        <Row>
-          <Col className="mb-3" md={4}>
-            <div className={styles.info}>
-              <strong>Id</strong>
-              <span>{job.id}</span>
-            </div>
-          </Col>
-          <Col className="mb-3" md={4}>
-            <div className={styles.info}>
-              <strong>State</strong>
-              <span>{job.state ? capitalize(job.state) : ''}</span>
-            </div>
-          </Col>
-          <Col className="mb-3" md={4}>
-            <div className={styles.info}>
-              <strong>Attempts made</strong>
-              <span>{job.attemptsMade}</span>
-            </div>
-          </Col>
-        </Row>
+      <Card>
+        <Container className="mb-2" fluid>
+          <Row>
+            <Col className="mb-3" md={4}>
+              <div className={styles.info}>
+                <label>Id</label>
+                <span>{job.id}</span>
+              </div>
+            </Col>
+            <Col className="mb-3" md={4}>
+              <div className={styles.info}>
+                <label>State</label>
+                <span>{job.state ? capitalize(job.state) : ''}</span>
+              </div>
+            </Col>
+            <Col className="mb-3" md={4}>
+              <div className={styles.info}>
+                <label>Attempts made</label>
+                <span>{job.attemptsMade}</span>
+              </div>
+            </Col>
+          </Row>
 
-        <Row>
-          <Col className="mb-3" md={4}>
-            <div className={styles.info}>
-              <strong>Created at</strong>
-              <span>{job.createdAt || '-'}</span>
-            </div>
-          </Col>
-          <Col className="mb-3" md={4}>
-            <div className={styles.info}>
-              <strong>Processed at</strong>
-              <span>{job.processedAt || '-'}</span>
-            </div>
-          </Col>
-          <Col className="mb-3" md={4}>
-            <div className={styles.info}>
-              <strong>Finished at</strong>
-              <span>{job.finishedAt || '-'}</span>
-            </div>
-          </Col>
-        </Row>
+          <Row>
+            <Col className="mb-3" md={4}>
+              <div className={styles.info}>
+                <label>Created at</label>
+                <span>{job.createdAt || '-'}</span>
+              </div>
+            </Col>
+            <Col className="mb-3" md={4}>
+              <div className={styles.info}>
+                <label>Processed at</label>
+                <span>{job.processedAt || '-'}</span>
+              </div>
+            </Col>
+            <Col className="mb-3" md={4}>
+              <div className={styles.info}>
+                <label>Finished at</label>
+                <span>{job.finishedAt || '-'}</span>
+              </div>
+            </Col>
+          </Row>
 
-        <Row>
-          <Col className="mb-3" md={12}>
-            <InfoCard
-              label="Data"
-              variant="primary"
-              value={(
-                <pre>
-                  {job.data ? JSON.stringify(job.data, null, 2) : ''}
-                </pre>
-              )}
-            />
-          </Col>
-        </Row>
+          <Row>
+            <Col className="mb-3" md={12}>
+              <InfoCard
+                label="Data"
+                variant="primary"
+                value={(
+                  <pre>
+                    {job.data ? JSON.stringify(job.data, null, 2) : ''}
+                  </pre>
+                )}
+              />
+            </Col>
+          </Row>
 
-        {
-          ['failed', 'delayed'].includes(job.state) && (
-            <Row>
-              <Col className="mb-3" md={12}>
-                <InfoCard
-                  label="Reason for failure"
-                  variant="danger"
-                  value={(
-                    <pre>
-                      {job.failedReason}
-                    </pre>
-                  )}
-                />
-              </Col>
-              <Col className="mb-3" md={12}>
-                <InfoCard
-                  label="Stacktraces"
-                  variant="danger"
-                  value={getFormattedStacktrace()}
-                />
-              </Col>
-            </Row>
-          )
-        }
-      </Container>
+          {
+            ['failed', 'delayed'].includes(job.state) && (
+              <Row>
+                <Col className="mb-3" md={12}>
+                  <InfoCard
+                    label="Reason for failure"
+                    variant="danger"
+                    value={(
+                      <pre>
+                        {job.failedReason}
+                      </pre>
+                    )}
+                  />
+                </Col>
+                <Col className="mb-3" md={12}>
+                  <InfoCard
+                    label="Stacktraces"
+                    variant="danger"
+                    value={getFormattedStacktrace()}
+                  />
+                </Col>
+              </Row>
+            )
+          }
+        </Container>
+      </Card>
     </Default>
   );
 };
