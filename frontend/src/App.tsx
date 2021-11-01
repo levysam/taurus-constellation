@@ -1,16 +1,15 @@
 import React from 'react';
-import { setConfiguration } from 'react-grid-system';
+import 'react-toastify/dist/ReactToastify.css';
 import './styles/global.scss';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from './routes';
-
-setConfiguration({
-  gutterWidth: 20,
-});
+import AppProvider from './hooks';
 
 const App: React.FC = () => (
   <Router>
-    <Routes />
+    <AppProvider>
+      <Routes />
+    </AppProvider>
   </Router>
 );
 
