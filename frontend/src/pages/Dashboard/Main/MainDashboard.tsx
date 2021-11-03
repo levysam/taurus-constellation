@@ -47,6 +47,7 @@ const MainDashboard: React.FC = () => {
   const [mode, setMode] = useState<DashboardMode>('table');
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();
 
   /**
    * Load dashboard data.
@@ -64,7 +65,38 @@ const MainDashboard: React.FC = () => {
 
   useEffect(() => {
     loadDashboard();
+
+    return () => {
+      if (timeoutId) {
+        clearInterval(timeoutId);
+      }
+    };
   }, [history]);
+
+  /**
+   * Set refresh time.
+   */
+  const setRefresh = useCallback((milliseconds: number) => {
+    if (timeoutId) {
+      clearInterval(timeoutId);
+    }
+
+    setTimeoutId(
+      setInterval(
+        loadDashboard,
+        milliseconds,
+      ),
+    );
+  }, [timeoutId]);
+
+  /**
+   * Reset refresh time.
+   */
+  const resetRefresh = useCallback(() => {
+    if (timeoutId) {
+      clearInterval(timeoutId);
+    }
+  }, [timeoutId]);
 
   /**
    * Get queue link.
@@ -314,6 +346,32 @@ const MainDashboard: React.FC = () => {
         title="Dashboard"
         tools={(
           <div className={styles.pageHeaderTools}>
+            <Dropdown
+              className="mr-1"
+              title="Refresh"
+              options={[
+                {
+                  label: 'No refresh',
+                  onClick: () => { resetRefresh(); },
+                },
+                {
+                  label: '5 seconds',
+                  onClick: () => { setRefresh(5000); },
+                },
+                {
+                  label: '10 seconds',
+                  onClick: () => { setRefresh(10000); },
+                },
+                {
+                  label: '30 seconds',
+                  onClick: () => { setRefresh(30000); },
+                },
+                {
+                  label: '1 minute',
+                  onClick: () => { setRefresh(60000); },
+                },
+              ]}
+            />
             <Dropdown
               className="mr-1"
               title="Actions"
