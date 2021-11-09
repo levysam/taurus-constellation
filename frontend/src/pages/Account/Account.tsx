@@ -20,6 +20,11 @@ interface Group {
   name: string;
 }
 
+interface GroupListResponse {
+  total: number;
+  groups: Group[];
+}
+
 interface UserData {
   name: string;
   email: string;
@@ -57,9 +62,9 @@ const Account: React.FC = () => {
     const loadGroups = async (): Promise<void> => {
       setLoading(true);
       try {
-        const { data } = await api.get<Group[]>('/group');
+        const { data } = await api.get<GroupListResponse>('/group');
         setGroups(
-          formatSelectOptions(data, 'name', 'id'),
+          formatSelectOptions(data.groups, 'name', 'id'),
         );
         setLoading(false);
       } catch (error) {

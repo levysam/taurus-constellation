@@ -44,6 +44,11 @@ interface Queue {
   group?: Group;
 }
 
+interface GroupListResponse {
+  total: number;
+  groups: Group[];
+}
+
 const QueuesForm: React.FC = () => {
   const history = useHistory();
   const { addToast } = useToast();
@@ -64,9 +69,9 @@ const QueuesForm: React.FC = () => {
     const loadGroups = async (): Promise<void> => {
       setLoading(true);
       try {
-        const { data } = await api.get<Group[]>('/group');
+        const { data } = await api.get<GroupListResponse>('/group');
         setGroups(
-          formatSelectOptions(data, 'name', 'id'),
+          formatSelectOptions(data.groups, 'name', 'id'),
         );
         setLoading(false);
       } catch (error) {

@@ -32,9 +32,16 @@ class GroupController {
     return response.json(result);
   }
 
-  public async list(_: Request, response: Response): Promise<Response> {
+  public async list(request: Request, response: Response): Promise<Response> {
+    const {
+      page,
+      size,
+    } = request.query;
     const listGroup = container.resolve(ListGroupService);
-    const groups = await listGroup.execute();
+    const groups = await listGroup.execute({
+      page: page ? Number(page) : undefined,
+      size: size ? Number(size) : undefined,
+    });
     return response.json(groups);
   }
 
