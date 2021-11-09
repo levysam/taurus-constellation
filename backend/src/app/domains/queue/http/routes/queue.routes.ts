@@ -82,6 +82,12 @@ router.get(
 
 router.get(
   '/',
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number(),
+      size: Joi.number(),
+    },
+  }),
   queueController.list,
 );
 

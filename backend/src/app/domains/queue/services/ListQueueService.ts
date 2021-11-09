@@ -2,6 +2,16 @@ import { inject, injectable } from 'tsyringe';
 import Queue from '../entities/Queue';
 import IQueueRepository from '../repositories/models/IQueueRepository';
 
+interface IRequest {
+  page?: number;
+  size?: number;
+}
+
+interface IResponse {
+  total: number;
+  queues: Queue[];
+}
+
 @injectable()
 class ListQueueService {
   constructor(
@@ -9,9 +19,20 @@ class ListQueueService {
     private queueRepository: IQueueRepository,
   ) {}
 
-  public async execute(): Promise<Queue[]> {
-    const queues = await this.queueRepository.findAll();
-    return queues;
+  public async execute({
+    page,
+    size,
+  }: IRequest): Promise<IResponse> {
+    const total = await this.queueRepository.count();
+    const queues = await this.queueRepository.findAll(
+      page,
+      size,
+    );
+
+    return {
+      total,
+      queues,
+    };
   }
 }
 
