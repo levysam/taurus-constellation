@@ -27,8 +27,18 @@ router.get(
 );
 
 router.get(
-  '/dashboard',
+  '/dashboard/:id',
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.string().required(),
+    },
+  }),
   groupController.showDashboard,
+);
+
+router.get(
+  '/dashboard',
+  groupController.listDashboard,
 );
 
 router.get(

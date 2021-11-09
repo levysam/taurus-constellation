@@ -4,6 +4,7 @@ import Route from './Route';
 
 import Account from '../pages/Account/Account';
 import MainDashboard from '../pages/Dashboard/Main/MainDashboard';
+import GroupDashboard from '../pages/Dashboard/Group/GroupDashboard';
 import GroupsForm from '../pages/Groups/Form/Form';
 import GroupsList from '../pages/Groups/List/List';
 import JobsDetail from '../pages/Dashboard/Jobs/Detail/Detail';
@@ -20,6 +21,7 @@ const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={Login} />
     <Route path="/dashboard" exact component={MainDashboard} isPrivate />
+    <Route path="/dashboard/:id" exact component={GroupDashboard} isPrivate />
     <Route path="/dashboard/queues/:id" exact component={QueueDashboard} isPrivate />
     <Route path="/dashboard/queues/:queueId/:state/jobs" exact component={JobsList} isPrivate />
     <Route path="/dashboard/queues/:queueId/:state/jobs/form" exact component={JobsForm} isPrivate />
