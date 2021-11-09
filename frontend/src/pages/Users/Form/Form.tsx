@@ -292,6 +292,7 @@ const UsersForm: React.FC = () => {
                 <Input
                   type="password"
                   name="password"
+                  data-lpignore="true"
                   autoComplete="off"
                   hasError={!!errors.password}
                   onInput={({ currentTarget }) => {

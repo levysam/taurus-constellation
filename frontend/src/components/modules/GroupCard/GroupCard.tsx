@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
@@ -38,6 +39,8 @@ const GroupCard: React.FC<GroupCardProps> = ({
   onPause,
   onResume,
 }) => {
+  const history = useHistory();
+
   /**
    * Handle pause.
    */
@@ -60,7 +63,13 @@ const GroupCard: React.FC<GroupCardProps> = ({
     <Card className={styles.groupCard}>
       <CardHeader className={styles.header}>
         <CardTitle>
-          {group.name}
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={() => { history.push(`/dashboard/${group.id}`); }}
+          >
+            {group.name}
+          </span>
         </CardTitle>
       </CardHeader>
 
@@ -69,7 +78,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
         <div key={queue.id} className={styles.queue}>
           <div className={styles.header}>
             <div className={styles.title}>
-              <span className={styles.name}>
+              <span
+                role="button"
+                tabIndex={index + 1}
+                className={styles.name}
+                onClick={() => { history.push(`/dashboard/queues/${queue.id}`); }}
+              >
                 {queue.name}
               </span>
               <span className={classnames(styles.status, {
@@ -108,7 +122,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
             </div>
           </div>
           <div className={styles.jobs}>
-            <div className={styles.job}>
+            <div
+              role="button"
+              tabIndex={index + 1}
+              className={styles.job}
+              onClick={() => { history.push(`/dashboard/queues/${queue.id}/waiting/jobs`); }}
+            >
               <span className={styles.value}>
                 {queue.jobCounts.waiting}
               </span>
@@ -116,7 +135,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
                 Waiting
               </span>
             </div>
-            <div className={styles.job}>
+            <div
+              role="button"
+              tabIndex={index + 1}
+              className={styles.job}
+              onClick={() => { history.push(`/dashboard/queues/${queue.id}/paused/jobs`); }}
+            >
               <span className={styles.value}>
                 {queue.jobCounts.paused}
               </span>
@@ -124,7 +148,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
                 Paused
               </span>
             </div>
-            <div className={styles.job}>
+            <div
+              role="button"
+              tabIndex={index + 1}
+              className={styles.job}
+              onClick={() => { history.push(`/dashboard/queues/${queue.id}/active/jobs`); }}
+            >
               <span className={styles.value}>
                 {queue.jobCounts.active}
               </span>
@@ -132,7 +161,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
                 Active
               </span>
             </div>
-            <div className={styles.job}>
+            <div
+              role="button"
+              tabIndex={index + 1}
+              className={styles.job}
+              onClick={() => { history.push(`/dashboard/queues/${queue.id}/delayed/jobs`); }}
+            >
               <span className={styles.value}>
                 {queue.jobCounts.delayed}
               </span>
@@ -140,7 +174,12 @@ const GroupCard: React.FC<GroupCardProps> = ({
                 Delayed
               </span>
             </div>
-            <div className={styles.job}>
+            <div
+              role="button"
+              tabIndex={index + 1}
+              className={styles.job}
+              onClick={() => { history.push(`/dashboard/queues/${queue.id}/failed/jobs`); }}
+            >
               <span className={styles.value}>
                 {queue.jobCounts.failed}
               </span>

@@ -91,7 +91,7 @@ const Select: React.FC<SelectProps> = ({
           ':first-of-type': {
             ...styles[':first-of-type'],
             borderTop: 'none',
-            fontWeight: 'bold',
+            fontWeight: isMulti ? 'bold' : 'normal',
           },
           ':active': {
             ...styles[':active'],
