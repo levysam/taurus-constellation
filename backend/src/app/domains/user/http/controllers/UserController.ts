@@ -36,9 +36,16 @@ class UserController {
     return response.json(result);
   }
 
-  public async list(_: Request, response: Response): Promise<Response> {
+  public async list(request: Request, response: Response): Promise<Response> {
+    const {
+      page,
+      size,
+    } = request.query;
     const listUser = container.resolve(ListUserService);
-    const users = await listUser.execute();
+    const users = await listUser.execute({
+      page: page ? Number(page) : undefined,
+      size: size ? Number(size) : undefined,
+    });
     return response.json(classToClass(users));
   }
 

@@ -24,6 +24,12 @@ router.post(
 
 router.get(
   '/',
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number(),
+      size: Joi.number(),
+    },
+  }),
   userController.list,
 );
 
