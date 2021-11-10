@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '../../../components/elements/Button/Button';
+import DataTable, { DataTableColumn, DataTablePagination } from '../../../components/modules/DataTable/DataTable';
 import Default from '../../../components/layouts/Default/Default';
 import Loader from '../../../components/elements/Loader/Loader';
-import DataTable, { DataTableColumn } from '../../../components/modules/DataTable/DataTable';
 import api from '../../../services/api';
+import { PaginationSize } from '../../../components/modules/Pagination/Pagination';
 
 interface Group {
   id: string;
@@ -18,25 +19,47 @@ interface Queue {
   group: Group;
 }
 
+interface QueueListResponse {
+  total: number;
+  queues: Queue[];
+}
+
 const QueuesList: React.FC = () => {
   const history = useHistory();
   const [queues, setQueues] = useState<Queue[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [pagination, setPagination] = useState<DataTablePagination>({
+    page: 1,
+    size: 25,
+    total: 0,
+  });
+
+  /**
+   * Load queues.
+   */
+  const loadQueues = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get<QueueListResponse>('/queue', {
+        params: {
+          page: pagination.page,
+          size: pagination.size,
+        },
+      });
+      setQueues(data.queues);
+      setPagination({
+        ...pagination,
+        total: data.total,
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  }, [history, pagination]);
 
   useEffect(() => {
-    const loadQueues = async (): Promise<void> => {
-      setLoading(true);
-      try {
-        const { data } = await api.get<Queue[]>('/queue');
-        setQueues(data);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-
     loadQueues();
-  }, [history]);
+  }, [history, pagination.size, pagination.page]);
 
   const columns: DataTableColumn[] = [
     {
@@ -92,6 +115,20 @@ const QueuesList: React.FC = () => {
         noDataIndication="No queues found"
         rowEvents={{
           onClick: (_, queue) => { history.push(`/queues/${queue.id}`); },
+        }}
+        enablePagination
+        pagination={pagination}
+        onChangeSize={(size: PaginationSize) => {
+          setPagination({
+            ...pagination,
+            size,
+          });
+        }}
+        onChangePage={(page: number) => {
+          setPagination({
+            ...pagination,
+            page,
+          });
         }}
       />
     </Default>

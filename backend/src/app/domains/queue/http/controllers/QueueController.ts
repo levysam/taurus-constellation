@@ -115,8 +115,15 @@ class QueueController {
   }
 
   public async list(request: Request, response: Response): Promise<Response> {
+    const {
+      page,
+      size,
+    } = request.query;
     const listQueue = container.resolve(ListQueueService);
-    const queues = await listQueue.execute();
+    const queues = await listQueue.execute({
+      page: page ? Number(page) : undefined,
+      size: size ? Number(size) : undefined,
+    });
     return response.json(classToClass(queues));
   }
 

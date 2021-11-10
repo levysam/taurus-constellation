@@ -10,6 +10,10 @@ class UserRepository implements IUserRepository {
     this.ormRepository = getRepository(User);
   }
 
+  public async count(): Promise<number> {
+    return this.ormRepository.count();
+  }
+
   public async create({
     name,
     email,
@@ -38,9 +42,14 @@ class UserRepository implements IUserRepository {
     return user;
   }
 
-  public async findAll(): Promise<User[]> {
-    const users = await this.ormRepository.find();
-    return users;
+  public async findAll(
+    page?: number,
+    size?: number,
+  ): Promise<User[]> {
+    return this.ormRepository.find({
+      take: size || undefined,
+      skip: (page && size) ? (page - 1) * size : undefined,
+    });
   }
 
   public async findByEmail(email: string): Promise<User | undefined> {

@@ -10,6 +10,10 @@ class QueueRepository implements IQueueRepository {
     this.ormRepository = getRepository(Queue);
   }
 
+  public async count(): Promise<number> {
+    return this.ormRepository.count();
+  }
+
   public async create({
     name,
     description,
@@ -38,12 +42,17 @@ class QueueRepository implements IQueueRepository {
     return queue;
   }
 
-  public async findAll(): Promise<Queue[]> {
+  public async findAll(
+    page?: number,
+    size?: number,
+  ): Promise<Queue[]> {
     const queues = await this.ormRepository.find({
       relations: ['group'],
       order: {
         id: 'ASC',
       },
+      take: size || undefined,
+      skip: (page && size) ? (page - 1) * size : undefined,
     });
     return queues;
   }

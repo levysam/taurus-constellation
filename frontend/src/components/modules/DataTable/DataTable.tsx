@@ -15,7 +15,7 @@ export interface DataTablePagination {
 
 interface DataTableProps extends Omit<BootstrapTableProps, 'pagination'> {
   className?: string;
-  title: string;
+  title: string | React.ReactNode;
   tools?: React.ReactNode;
   enablePagination?: boolean;
   pagination?: DataTablePagination;

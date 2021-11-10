@@ -5,7 +5,6 @@ import IQueueRepository from '../../queue/repositories/models/IQueueRepository';
 import BullQueueProvider from '../../../providers/QueueProvider/BullQueueProvider';
 import Group from '../entities/Group';
 import IGroupRepository from '../repositories/models/IGroupRepository';
-import CustomError from '../../../errors/CustomError';
 
 interface IUser {
   id: string;
@@ -14,7 +13,6 @@ interface IUser {
 }
 
 interface IRequest {
-  groupId: string;
   user: IUser;
 }
 
@@ -24,7 +22,7 @@ interface IDashboardItem {
 }
 
 @injectable()
-class ShowGroupDashboardService {
+class ListGroupDashboardService {
   constructor(
     @inject('GroupRepository')
     private groupRepository: IGroupRepository,
@@ -34,37 +32,37 @@ class ShowGroupDashboardService {
   ) {}
 
   public async execute({
-    groupId,
     user,
-  }: IRequest): Promise<IDashboardItem> {
-    if (
-      user.role !== 'administrator'
-      && !user.groupIds.includes(groupId)
-    ) {
-      throw new CustomError('User has no permission to access this group.', 403);
+  }: IRequest): Promise<IDashboardItem[]> {
+    const groups = await this.getGroups(user);
+    const dashboard: IDashboardItem[] = [];
+
+    for (const group of groups) {
+      const queues = await this.queueRepository.findByGroup(group.id);
+      const describedQueues = await Promise.all(
+        queues.map(async (queue) => {
+          const queueProvider = this.newBullQueueProvider(queue);
+          const describedQueue = await queueProvider.describe();
+          await queueProvider.close();
+
+          return describedQueue;
+        }),
+      );
+
+      dashboard.push({
+        group,
+        queues: describedQueues,
+      });
     }
 
-    const group = await this.groupRepository.find(groupId);
+    return dashboard;
+  }
 
-    if (!group) {
-      throw new CustomError('Group not found.', 404);
+  public async getGroups(user: IUser): Promise<Group[]> {
+    if (user.role === 'administrator') {
+      return this.groupRepository.findAll();
     }
-
-    const queues = await this.queueRepository.findByGroup(group.id);
-    const describedQueues = await Promise.all(
-      queues.map(async (queue) => {
-        const queueProvider = this.newBullQueueProvider(queue);
-        const describedQueue = await queueProvider.describe();
-        await queueProvider.close();
-
-        return describedQueue;
-      }),
-    );
-
-    return {
-      group,
-      queues: describedQueues,
-    };
+    return this.groupRepository.findByIds(user.groupIds);
   }
 
   public newBullQueueProvider(queue: Queue): IQueueProvider {
@@ -72,4 +70,4 @@ class ShowGroupDashboardService {
   }
 }
 
-export default ShowGroupDashboardService;
+export default ListGroupDashboardService;

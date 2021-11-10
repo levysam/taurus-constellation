@@ -10,6 +10,10 @@ class GroupRepository implements IGroupRepository {
     this.ormRepository = getRepository(Group);
   }
 
+  public async count(): Promise<number> {
+    return this.ormRepository.count();
+  }
+
   public async create({
     name,
     description,
@@ -35,11 +39,16 @@ class GroupRepository implements IGroupRepository {
     return group;
   }
 
-  public async findAll(): Promise<Group[]> {
+  public async findAll(
+    page?: number,
+    size?: number,
+  ): Promise<Group[]> {
     return this.ormRepository.find({
       order: {
         createdAt: 'ASC',
       },
+      take: size || undefined,
+      skip: (page && size) ? (page - 1) * size : undefined,
     });
   }
 

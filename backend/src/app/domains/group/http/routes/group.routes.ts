@@ -23,12 +23,28 @@ router.post(
 
 router.get(
   '/',
+  celebrate({
+    [Segments.QUERY]: {
+      page: Joi.number(),
+      size: Joi.number(),
+    },
+  }),
   groupController.list,
 );
 
 router.get(
-  '/dashboard',
+  '/dashboard/:id',
+  celebrate({
+    [Segments.PARAMS]: {
+      id: Joi.string().required(),
+    },
+  }),
   groupController.showDashboard,
+);
+
+router.get(
+  '/dashboard',
+  groupController.listDashboard,
 );
 
 router.get(

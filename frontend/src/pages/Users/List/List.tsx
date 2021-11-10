@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '../../../components/elements/Button/Button';
+import DataTable, { DataTableColumn, DataTablePagination } from '../../../components/modules/DataTable/DataTable';
 import Default from '../../../components/layouts/Default/Default';
 import Loader from '../../../components/elements/Loader/Loader';
-import DataTable, { DataTableColumn } from '../../../components/modules/DataTable/DataTable';
+import { PaginationSize } from '../../../components/modules/Pagination/Pagination';
 import api from '../../../services/api';
 
 interface User {
@@ -13,25 +14,47 @@ interface User {
   role: string;
 }
 
+interface UserListResponse {
+  total: number;
+  users: User[];
+}
+
 const UsersList: React.FC = () => {
   const history = useHistory();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [pagination, setPagination] = useState<DataTablePagination>({
+    page: 1,
+    size: 25,
+    total: 0,
+  });
+
+  /**
+   * Load users.
+   */
+  const loadUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get<UserListResponse>('/user', {
+        params: {
+          page: pagination.page,
+          size: pagination.size,
+        },
+      });
+      setUsers(data.users);
+      setPagination({
+        ...pagination,
+        total: data.total,
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  }, [history, pagination]);
 
   useEffect(() => {
-    const loadUsers = async (): Promise<void> => {
-      setLoading(true);
-      try {
-        const { data } = await api.get<User[]>('/user');
-        setUsers(data);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-
     loadUsers();
-  }, [history]);
+  }, [history, pagination.size, pagination.page]);
 
   const columns: DataTableColumn[] = [
     {
@@ -84,6 +107,20 @@ const UsersList: React.FC = () => {
         noDataIndication="No users found"
         rowEvents={{
           onClick: (_, user) => { history.push(`/users/${user.id}`); },
+        }}
+        enablePagination
+        pagination={pagination}
+        onChangeSize={(size: PaginationSize) => {
+          setPagination({
+            ...pagination,
+            size,
+          });
+        }}
+        onChangePage={(page: number) => {
+          setPagination({
+            ...pagination,
+            page,
+          });
         }}
       />
     </Default>

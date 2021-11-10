@@ -1,19 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import classnames from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStream, faTable } from '@fortawesome/free-solid-svg-icons';
-import Button from '../../../components/elements/Button/Button';
-import ButtonGroup from '../../../components/modules/ButtonGroup/ButtonGroup';
 import DataTable, { DataTableColumn } from '../../../components/modules/DataTable/DataTable';
 import Default from '../../../components/layouts/Default/Default';
 import Dropdown from '../../../components/elements/Dropdown/Dropdown';
-import GroupCard from '../../../components/modules/GroupCard/GroupCard';
 import Loader from '../../../components/elements/Loader/Loader';
 import PageHeader from '../../../components/modules/PageHeader/PageHeader';
 import api from '../../../services/api';
 import { useToast } from '../../../hooks/toast';
 import styles from './styles.module.scss';
+
+interface GroupDashboardParams {
+  id?: string;
+}
 
 interface Group {
   id: string;
@@ -33,21 +32,19 @@ interface Queue {
     completed: number;
   }
 }
+
 interface GroupDashboard {
   group: Group;
   queues: Queue[];
 }
 
-type DashboardMode = 'table' | 'cards';
-
-const MainDashboard: React.FC = () => {
+const GroupDashboard: React.FC = () => {
   const history = useHistory();
   const { addToast } = useToast();
-  const [groupDashboards, setGroupDashboards] = useState<GroupDashboard[]>([]);
-  const [mode, setMode] = useState<DashboardMode>('table');
+  const { id } = useParams<GroupDashboardParams>();
+  const [groupDashboard, setGroupDashboard] = useState<GroupDashboard>();
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();
 
   /**
    * Load dashboard data.
@@ -55,48 +52,17 @@ const MainDashboard: React.FC = () => {
   const loadDashboard = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
-      const { data: dashboards } = await api.get<GroupDashboard[]>('/group/dashboard');
-      setGroupDashboards(dashboards);
+      const { data: dashboard } = await api.get<GroupDashboard>(`/group/dashboard/${id}`);
+      setGroupDashboard(dashboard);
       setLoading(false);
     } catch (error) {
       setLoading(false);
     }
-  }, [history]);
+  }, [id]);
 
   useEffect(() => {
     loadDashboard();
-
-    return () => {
-      if (timeoutId) {
-        clearInterval(timeoutId);
-      }
-    };
-  }, [history]);
-
-  /**
-   * Set refresh time.
-   */
-  const setRefresh = useCallback((milliseconds: number) => {
-    if (timeoutId) {
-      clearInterval(timeoutId);
-    }
-
-    setTimeoutId(
-      setInterval(
-        loadDashboard,
-        milliseconds,
-      ),
-    );
-  }, [timeoutId]);
-
-  /**
-   * Reset refresh time.
-   */
-  const resetRefresh = useCallback(() => {
-    if (timeoutId) {
-      clearInterval(timeoutId);
-    }
-  }, [timeoutId]);
+  }, [history, id]);
 
   /**
    * Get queue link.
@@ -106,8 +72,7 @@ const MainDashboard: React.FC = () => {
     state: string,
     content: string,
   ) => {
-    const { id } = queue;
-    const href = `/dashboard/queues/${id}/${state}/jobs`;
+    const href = `/dashboard/queues/${queue.id}/${state}/jobs`;
 
     return (
       <span
@@ -119,7 +84,7 @@ const MainDashboard: React.FC = () => {
         {content}
       </span>
     );
-  }, [groupDashboards]);
+  }, [groupDashboard]);
 
   /**
    * Handle table row selection.
@@ -190,7 +155,7 @@ const MainDashboard: React.FC = () => {
       });
       setLoading(false);
     }
-  }, [groupDashboards]);
+  }, [groupDashboard]);
 
   /**
    * Resume queues.
@@ -224,7 +189,7 @@ const MainDashboard: React.FC = () => {
       });
       setLoading(false);
     }
-  }, [groupDashboards]);
+  }, [groupDashboard]);
 
   /**
    * Table columns definition.
@@ -343,35 +308,9 @@ const MainDashboard: React.FC = () => {
       }
 
       <PageHeader
-        title="Dashboard"
+        title="Group Dashboard"
         tools={(
           <div className={styles.pageHeaderTools}>
-            <Dropdown
-              className="mr-1"
-              title="Refresh"
-              options={[
-                {
-                  label: 'No refresh',
-                  onClick: () => { resetRefresh(); },
-                },
-                {
-                  label: '5 seconds',
-                  onClick: () => { setRefresh(5000); },
-                },
-                {
-                  label: '10 seconds',
-                  onClick: () => { setRefresh(10000); },
-                },
-                {
-                  label: '30 seconds',
-                  onClick: () => { setRefresh(30000); },
-                },
-                {
-                  label: '1 minute',
-                  onClick: () => { setRefresh(60000); },
-                },
-              ]}
-            />
             <Dropdown
               className="mr-1"
               title="Actions"
@@ -386,77 +325,38 @@ const MainDashboard: React.FC = () => {
                 },
               ]}
             />
-            <ButtonGroup className="mr-1">
-              <Button
-                variant="dark"
-                onClick={() => { setMode('table'); }}
-              >
-                <FontAwesomeIcon icon={faTable} />
-              </Button>
-              <Button
-                variant="dark"
-                onClick={() => { setMode('cards'); }}
-              >
-                <FontAwesomeIcon icon={faStream} />
-              </Button>
-            </ButtonGroup>
           </div>
         )}
       />
 
       {
-        groupDashboards.length === 0
+        !groupDashboard
         && (
-          <span>No groups found</span>
+          <span>Group not found</span>
         )
       }
 
       {
-        mode === 'cards'
+        !!groupDashboard
         && (
-          groupDashboards.map((item) => (
-            <GroupCard
-              key={item.group.id}
-              group={item.group}
-              queues={item.queues}
-              onPause={(queueId: string) => { pauseQueues([queueId]); }}
-              onResume={(queueId: string) => { resumeQueues([queueId]); }}
-            />
-          ))
-        )
-      }
-
-      {
-        mode === 'table'
-        && (
-          groupDashboards.map((item, index) => (
-            <DataTable
-              className={styles.dataTable}
-              key={item.group.id}
-              title={(
-                <span
-                  role="button"
-                  tabIndex={index}
-                  onClick={() => { history.push(`/dashboard/${item.group.id}`); }}
-                >
-                  {item.group.name}
-                </span>
-              )}
-              keyField="id"
-              columns={columns}
-              data={item.queues}
-              noDataIndication="No results found"
-              selectRow={{
-                mode: 'checkbox',
-                onSelect: handleSelect,
-                onSelectAll: handleSelectAll,
-              }}
-            />
-          ))
+          <DataTable
+            className={styles.dataTable}
+            key={groupDashboard.group.id}
+            title={groupDashboard.group.name}
+            keyField="id"
+            columns={columns}
+            data={groupDashboard.queues}
+            noDataIndication="No results found"
+            selectRow={{
+              mode: 'checkbox',
+              onSelect: handleSelect,
+              onSelectAll: handleSelectAll,
+            }}
+          />
         )
       }
     </Default>
   );
 };
 
-export default MainDashboard;
+export default GroupDashboard;

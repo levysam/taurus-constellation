@@ -44,6 +44,11 @@ interface User {
   groups?: Group[];
 }
 
+interface GroupListResponse {
+  total: number;
+  groups: Group[];
+}
+
 const UsersForm: React.FC = () => {
   const history = useHistory();
   const { addToast } = useToast();
@@ -69,9 +74,9 @@ const UsersForm: React.FC = () => {
     const loadGroups = async (): Promise<void> => {
       setLoading(true);
       try {
-        const { data } = await api.get<Group[]>('/group');
+        const { data } = await api.get<GroupListResponse>('/group');
         setGroups(
-          formatSelectOptions(data, 'name', 'id'),
+          formatSelectOptions(data.groups, 'name', 'id'),
         );
         setLoading(false);
       } catch (error) {
@@ -287,6 +292,7 @@ const UsersForm: React.FC = () => {
                 <Input
                   type="password"
                   name="password"
+                  data-lpignore="true"
                   autoComplete="off"
                   hasError={!!errors.password}
                   onInput={({ currentTarget }) => {

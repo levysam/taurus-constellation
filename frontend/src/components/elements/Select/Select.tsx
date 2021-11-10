@@ -17,22 +17,36 @@ const Select: React.FC<SelectProps> = ({
   hasError,
   handleSelect,
   options,
+  isMulti,
   ...props
 }) => {
-  const onChange = (event: any): void => {
+  const formattedOptions = isMulti
+    ? [{ label: 'Select All', value: 'all' }, ...options]
+    : options;
+
+  const onChange = (selected: any): void => {
     if (!name || !handleSelect) {
       return;
     }
 
-    if (Array.isArray(event)) {
+    if (Array.isArray(selected)) {
+      const all = selected.find((option) => option.value === 'all');
+      if (all) {
+        handleSelect({
+          name,
+          value: options.map((option: any) => option.value),
+        });
+        return;
+      }
+
       handleSelect({
         name,
-        value: event.map(({ value }) => value),
+        value: selected.map(({ value }) => value),
       });
       return;
     }
 
-    const { value } = event;
+    const { value } = selected;
     handleSelect({
       name,
       value,
@@ -50,7 +64,7 @@ const Select: React.FC<SelectProps> = ({
           borderRadius: '5px',
           boxShadow: 'none',
           cursor: 'pointer',
-          height: '38px',
+          minHeight: '38px',
           padding: '0px 10px',
           zIndex: 99,
           ':hover': {
@@ -77,6 +91,7 @@ const Select: React.FC<SelectProps> = ({
           ':first-of-type': {
             ...styles[':first-of-type'],
             borderTop: 'none',
+            fontWeight: isMulti ? 'bold' : 'normal',
           },
           ':active': {
             ...styles[':active'],
@@ -100,7 +115,8 @@ const Select: React.FC<SelectProps> = ({
           color: 'var(--white)',
         }),
       }}
-      options={options}
+      options={formattedOptions}
+      isMulti={isMulti}
       onChange={onChange}
       {...props}
     />
