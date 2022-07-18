@@ -32,6 +32,10 @@ interface JobResponse {
   total: number;
 }
 
+interface RowClickEvent extends React.SyntheticEvent{
+  ctrlKey: boolean;
+}
+
 const JobsList: React.FC = () => {
   const history = useHistory();
   const { addToast } = useToast();
@@ -392,9 +396,15 @@ const JobsList: React.FC = () => {
         data={jobs}
         noDataIndication="No jobs so far"
         rowEvents={{
-          onClick: (_, row) => {
+          onClick: (e, row) => {
             const { id } = row;
-            history.push(`/dashboard/queues/${queueId}/${state}/jobs/${id}`);
+            const event = e as RowClickEvent;
+
+            if (event.ctrlKey) {
+              return window.open(`/dashboard/queues/${queueId}/${state}/jobs/${id}`, '_blank');
+            }
+
+            return history.push(`/dashboard/queues/${queueId}/${state}/jobs/${id}`);
           },
         }}
         selectRow={{
