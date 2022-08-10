@@ -5,7 +5,7 @@ import IQueueProvider from '../../../providers/QueueProvider/models/IQueueProvid
 import { Job } from '../../../providers/QueueProvider/types';
 import Queue from '../../queue/entities/Queue';
 import IQueueRepository from '../../queue/repositories/models/IQueueRepository';
-import { compliance } from '../../../utils/dateUtils';
+import { queueCompliance } from '../../../utils/compliceUtils';
 
 interface IRequest {
   queueId: string;
@@ -30,7 +30,7 @@ class ShowJobService {
 
     const queueProvider = this.newQueueProvider(queue);
     const job = await queueProvider.getJob(jobId);
-    compliance(job , queue);
+    queueCompliance(job , queue);
     await queueProvider.close();
 
     return job;

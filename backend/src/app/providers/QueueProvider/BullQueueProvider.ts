@@ -2,7 +2,9 @@ import Bull from 'bull';
 import { ulid } from 'ulid';
 import Queue from '../../domains/queue/entities/Queue';
 import IQueueProvider from './models/IQueueProvider';
-import { timestampToDate, compliance } from '../../utils/dateUtils';
+import {timestampToDate} from '../../utils/dateUtils';
+import {queueCompliance} from '../../utils/compliceUtils';
+
 import {
   Job, JobStacktrace, JobState, QueueJobCounts, QueueStatus,
 } from './types';
@@ -94,7 +96,7 @@ class BullQueueProvider implements IQueueProvider {
         stacktrace: this.formatJobStacktrace(job.stacktrace),
       } as Job;
       
-      compliance(jobTaurus, this.queue);
+      queueCompliance(jobTaurus, this.queue);
     }
     return JSON.stringify(job.toJSON(), null, 2);
   }
