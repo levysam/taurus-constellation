@@ -4,10 +4,14 @@ import BullQueueProvider from '../../../providers/QueueProvider/BullQueueProvide
 import IQueueProvider from '../../../providers/QueueProvider/models/IQueueProvider';
 import Queue from '../../queue/entities/Queue';
 import IQueueRepository from '../../queue/repositories/models/IQueueRepository';
-
+interface ITokenSubject {
+  id: string;
+  role: string;
+}
 interface IRequest {
   queueId: string;
   jobId: string;
+  user: ITokenSubject
 }
 
 interface IResponse {
@@ -25,6 +29,7 @@ class ExportJobService {
   public async execute({
     queueId,
     jobId,
+    user,
   }: IRequest): Promise<IResponse> {
     const queue = await this.queueRepository.find(queueId);
     if (!queue) {
@@ -32,7 +37,8 @@ class ExportJobService {
     }
 
     const queueProvider = this.newQueueProvider(queue);
-    const content = await queueProvider.exportJob(jobId);
+    const content = await queueProvider.exportJob(jobId, user.role);
+
     await queueProvider.close();
 
     if (!content) {

@@ -7,6 +7,7 @@ interface IRequest {
   id: string;
   name?: string;
   description?: string;
+  compliance?: string;
   host?: string;
   port?: number;
   groupId?: string;
@@ -23,6 +24,7 @@ class UpdateQueueService {
     id,
     name,
     description,
+    compliance,
     host,
     port,
     groupId,
@@ -34,6 +36,7 @@ class UpdateQueueService {
 
     queue.name = name || queue.name;
     queue.description = description || '';
+    queue.compliance = compliance || '';
     queue.host = host || queue.host;
     queue.port = port || queue.port;
     queue.groupId = groupId || queue.groupId;

@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import Group from '../../group/entities/Group';
 import { QueueJobCounts, QueueStatus } from '../../../providers/QueueProvider/types';
-
 @Entity('queue')
 class Queue {
   @PrimaryGeneratedColumn('uuid')
@@ -21,6 +20,9 @@ class Queue {
 
   @Column()
   description: string;
+
+  @Column()
+  compliance: string;
 
   @Column()
   host: string;

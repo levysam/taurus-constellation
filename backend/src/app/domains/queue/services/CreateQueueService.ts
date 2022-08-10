@@ -5,6 +5,7 @@ import IQueueRepository from '../repositories/models/IQueueRepository';
 interface IRequest {
   name: string;
   description?: string;
+  compliance?: string;
   host: string;
   port: number;
   groupId: string;
@@ -20,6 +21,7 @@ class CreateQueueService {
   public async execute({
     name,
     description,
+    compliance,
     host,
     port,
     groupId,
@@ -27,6 +29,7 @@ class CreateQueueService {
     const queue = await this.queueRepository.create({
       name,
       description,
+      compliance,
       host,
       port,
       groupId,
