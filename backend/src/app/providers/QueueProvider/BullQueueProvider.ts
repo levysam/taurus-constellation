@@ -2,8 +2,8 @@ import Bull from 'bull';
 import { ulid } from 'ulid';
 import Queue from '../../domains/queue/entities/Queue';
 import IQueueProvider from './models/IQueueProvider';
-import {timestampToDate} from '../../utils/dateUtils';
-import {queueCompliance} from '../../utils/compliceUtils';
+import { timestampToDate } from '../../utils/dateUtils';
+import { queueCompliance } from '../../utils/compliceUtils';
 
 import {
   Job, JobStacktrace, JobState, QueueJobCounts, QueueStatus,
