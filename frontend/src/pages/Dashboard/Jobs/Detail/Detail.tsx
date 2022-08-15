@@ -34,6 +34,7 @@ interface Job {
   finishedAt: string;
   attemptsMade: number;
   state: string;
+  canRetry: boolean;
   failedReason?: string;
   stacktrace?: JobStacktrace[];
 }
@@ -41,6 +42,7 @@ interface Job {
 interface Queue {
   id: string;
   name: string;
+  compliance: string;
 }
 
 const JobsDetail: React.FC = () => {
@@ -73,10 +75,10 @@ const JobsDetail: React.FC = () => {
     try {
       loadQueue();
       loadJob();
-      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
+    setLoading(false);
   }, [queueId, jobId]);
 
   /**
@@ -104,7 +106,11 @@ const JobsDetail: React.FC = () => {
   const retryJob = useCallback(async () => {
     setLoading(true);
     try {
-      await api.post(`/queue/${queueId}/job/retry`, {
+      let urlRetry = `/queue/${queueId}/job/retry`;
+      if (!job.canRetry) {
+        urlRetry = `/queue/${queueId}/job/${jobId}/clone`;
+      }
+      await api.post(urlRetry, {
         jobIds: [jobId],
       });
       setLoading(false);
@@ -179,12 +185,12 @@ const JobsDetail: React.FC = () => {
       </ConfirmationModal>
 
       <ConfirmationModal
-        title="Retry Job"
+        title={job.canRetry ? 'Retry' : 'Clone'}
         show={showRetryModal}
         onConfirm={retryJob}
         onCancel={() => { setShowRetryModal(false); }}
       >
-        Do you want to retry this job?
+        Do you want to {job.canRetry ? 'retry' : 'clone'} this job?
       </ConfirmationModal>
 
       <PageHeader
@@ -195,7 +201,7 @@ const JobsDetail: React.FC = () => {
               title="Actions"
               options={[
                 {
-                  label: 'Retry',
+                  label: (job.canRetry ? 'Retry' : 'Clone'),
                   onClick: () => { setShowRetryModal(true); },
                 },
                 {

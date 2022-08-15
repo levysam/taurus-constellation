@@ -39,6 +39,7 @@ class QueueController {
     const {
       name,
       description,
+      compliance,
       host,
       port,
       groupId,
@@ -47,6 +48,7 @@ class QueueController {
     const queue = await createQueue.execute({
       name,
       description,
+      compliance,
       host,
       port,
       groupId,
@@ -100,10 +102,14 @@ class QueueController {
       queueId,
       jobId,
     } = request.params;
+    const {
+      user,
+    } = request;
     const exportJob = container.resolve(ExportJobService);
     const { filename, content } = await exportJob.execute({
       queueId,
       jobId,
+      user,
     });
 
     response.setHeader('Content-disposition', `attachment; filename=${filename}`);
@@ -192,7 +198,7 @@ class QueueController {
 
   public async retryJobs(request: Request, response: Response): Promise<Response> {
     const {
-      id: queueId,
+      id: queueId
     } = request.params;
     const {
       jobIds,
@@ -258,6 +264,7 @@ class QueueController {
     const {
       name,
       description,
+      compliance,
       host,
       port,
       groupId,
@@ -267,6 +274,7 @@ class QueueController {
       id,
       name,
       description,
+      compliance,
       host,
       port,
       groupId,

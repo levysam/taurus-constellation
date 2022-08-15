@@ -3,6 +3,8 @@ import { ulid } from 'ulid';
 import Queue from '../../domains/queue/entities/Queue';
 import IQueueProvider from './models/IQueueProvider';
 import { timestampToDate } from '../../utils/dateUtils';
+import { queueCompliance } from '../../utils/compliceUtils';
+
 import {
   Job, JobStacktrace, JobState, QueueJobCounts, QueueStatus,
 } from './types';
@@ -14,6 +16,7 @@ class BullQueueProvider implements IQueueProvider {
 
   constructor(queue: Queue) {
     this.queue = queue;
+
     this.bullQueue = new Bull(queue.name, {
       redis: {
         host: queue.host,
@@ -65,12 +68,36 @@ class BullQueueProvider implements IQueueProvider {
     return this.queue;
   }
 
-  public async exportJob(jobId: string): Promise<string | null> {
+  public async exportJob(jobId: string, role: string): Promise<string | null> {
     const job = await this.bullQueue.getJob(jobId);
     if (!job) {
       return null;
     }
 
+    if (role != 'administrator') {
+      const state = await job.getState();
+
+      let canRetry = false;
+      if (state == 'failed') {
+        canRetry = true;
+      }
+      var jobTaurus = {
+        id: job.id,
+        data: job.data,
+        attemptsMade: job.attemptsMade,
+        name: job.name,
+        timestamp: job.timestamp,
+        createdAt: timestampToDate(job.timestamp),
+        processedAt: timestampToDate(job.processedOn),
+        finishedAt: timestampToDate(job.finishedOn),
+        state,
+        canRetry,
+        failedReason: job.failedReason || null,
+        stacktrace: this.formatJobStacktrace(job.stacktrace),
+      } as Job;
+      
+      queueCompliance(jobTaurus, this.queue);
+    }
     return JSON.stringify(job.toJSON(), null, 2);
   }
 
@@ -93,6 +120,10 @@ class BullQueueProvider implements IQueueProvider {
 
     const state = await job.getState();
 
+    let canRetry = false;
+    if (state == 'failed') {
+      canRetry = true;
+    }
     return {
       id: job.id,
       data: job.data,
@@ -103,6 +134,7 @@ class BullQueueProvider implements IQueueProvider {
       processedAt: timestampToDate(job.processedOn),
       finishedAt: timestampToDate(job.finishedOn),
       state,
+      canRetry,
       failedReason: job.failedReason || null,
       stacktrace: this.formatJobStacktrace(job.stacktrace),
     } as Job;
@@ -130,10 +162,16 @@ class BullQueueProvider implements IQueueProvider {
       end,
     );
 
+    let canRetry = false;
+    if (state == 'failed') {
+      canRetry = true;
+    }
+
     return jobs.map((job) => ({
       id: job.id.toString(),
       attemptsMade: job.attemptsMade,
       name: job.name,
+      canRetry: canRetry,
       timestamp: job.timestamp,
       createdAt: timestampToDate(job.timestamp),
       processedAt: timestampToDate(job.processedOn),

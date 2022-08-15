@@ -38,6 +38,7 @@ interface Queue {
   id?: string;
   name: string;
   description?: string;
+  compliance?: string;
   host: string;
   port: number;
   groupId: string;
@@ -57,6 +58,7 @@ const QueuesForm: React.FC = () => {
   const [queue, setQueue] = useState<Queue>({
     name: '',
     description: '',
+    compliance: '',
     host: '',
     port: 6379,
     groupId: '',
@@ -151,6 +153,7 @@ const QueuesForm: React.FC = () => {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       description: Yup.string(),
+      compliance: Yup.string(),
       host: Yup.string().required(),
       port: Yup.number().required(),
       groupId: Yup.string().required(),
@@ -328,7 +331,27 @@ const QueuesForm: React.FC = () => {
                 />
               </FormGroup>
             </Col>
-
+            <Col xs={12} md={12}>
+              <FormGroup
+                label="Compliance"
+                error={errors.compliance}
+                required
+              >
+                <Input
+                  type="text"
+                  name="compliance"
+                  value={queue.compliance}
+                  autoComplete="off"
+                  hasError={!!errors.compliance}
+                  onInput={({ currentTarget }) => {
+                    setQueue({
+                      ...queue,
+                      compliance: currentTarget.value,
+                    });
+                  }}
+                />
+              </FormGroup>
+            </Col>
           </Row>
         </Container>
 

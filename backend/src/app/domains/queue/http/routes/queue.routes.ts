@@ -28,6 +28,7 @@ router.post(
       port: Joi.number().required(),
       groupId: Joi.string().required(),
       description: Joi.string().allow(null, ''),
+      compliance: Joi.string().allow(null, ''),
     },
   }),
   queueController.create,
@@ -154,6 +155,7 @@ router.post(
     },
     [Segments.BODY]: {
       jobIds: Joi.array().items(Joi.string().required()).required(),
+      state: Joi.string(),
     },
   }),
   queueController.retryJobs,
@@ -212,6 +214,7 @@ router.put(
       port: Joi.number(),
       groupId: Joi.string(),
       description: Joi.string().allow(null, ''),
+      compliance: Joi.string().allow(null, ''),
     },
   }, {
     allowUnknown: true,

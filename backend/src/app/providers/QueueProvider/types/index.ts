@@ -26,6 +26,7 @@ export type Job = {
   processedAt?: string;
   finishedAt?: string;
   state: JobState;
+  canRetry: boolean;
   failedReason?: string;
   stacktrace?: JobStacktrace[];
 };

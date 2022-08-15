@@ -17,6 +17,7 @@ class QueueRepository implements IQueueRepository {
   public async create({
     name,
     description,
+    compliance,
     host,
     port,
     groupId,
@@ -24,6 +25,7 @@ class QueueRepository implements IQueueRepository {
     const queue = this.ormRepository.create({
       name,
       description,
+      compliance,
       host,
       port,
       groupId,
