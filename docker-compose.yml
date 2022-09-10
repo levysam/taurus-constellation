@@ -10,18 +10,30 @@ services:
       - MYSQL_DATABASE=taurus-constellation
       - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - ./mysql-db:/docker-entrypoint-initdb.d
-      - ./storage/.db:/var/lib/mysql
+      - ./backend/mysql-db:/docker-entrypoint-initdb.d
+      - ./backend/storage/.db:/var/lib/mysql
     security_opt:
       - seccomp:unconfined
 
   backend:
-    build: .
+    build: ./backend/
     container_name: backend
     env_file:
-      - .env
+      - ./backend/.env
     depends_on:
       - taurus-constellation-mysql
+    ports:
+      - "3000:80"
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - taurus-constellation-mysql
+    ports:
+      - "80:80"
 
 networks:
     default:

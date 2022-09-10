@@ -1,4 +1,5 @@
 mysql-db
 node_modules
 storage
+build
 .env
