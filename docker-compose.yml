@@ -33,7 +33,7 @@ services:
     depends_on:
       - taurus-constellation-mysql
     ports:
-      - "80:80"
+      - "3001:80"
 
 networks:
     default:
