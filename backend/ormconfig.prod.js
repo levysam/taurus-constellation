@@ -17,4 +17,4 @@ exports.default = {
     cli: {
       migrationsDir: './build/database/migrations',
     },
-  };;
+  };
